@@ -6,6 +6,7 @@
 //
 
 import CoreMeasure
+import Security
 
 /// Represents the spherical coordinates of an object in the coordinate system defined for a set of
 /// coordinates.
@@ -20,7 +21,19 @@ public struct SphericalCoordinates {
     public let latitude: Latitude
     
     /// The radial distance of the object from the origin.
-    public let distance: Distance? = nil
+    public let distance: Distance?
+    
+    
+    /// Create a new set of Spherical coordinates.
+    /// - Parameters:
+    ///   - longitude: The longitude of the coordinates.
+    ///   - latitude: The latitudes of the coordinates.
+    ///   - distance: The distance of the coordinates.
+    public init(longitude: Longitude, latitude: Latitude, distance: Distance? = nil) {
+        self.longitude = longitude
+        self.latitude = latitude
+        self.distance = distance
+    }
 }
 
 /// Represents the rectangular coordinates of an object in the coordinate system defined for a set of
@@ -47,14 +60,14 @@ public struct RectangularCoordinates {
     public var distance: Distance {
         get {
             let measure = try! sqrt(pow(x,2) + pow(y,2) + pow(z,2))
-            return try! Distance(symbold: "d", measure.scalarValue, error: measure.error, unit: measure.unit)
+            return try! Distance(symbol: "d", measure.scalarValue, error: measure.error, unit: measure.unit)
         }
     }
 }
 
 public class Distance: Quantity {
     
-    public init(symbold: String? = nil, _ distance: Double, error: Double? = nil, unit: Unit) throws {
+    public override init(symbol: String? = nil, _ distance: Double, error: Double? = nil, unit: Unit) throws {
         if unit.dimensions != Unit.metre.dimensions {
             throw UnitValidationError.differentDimensionality
         }
@@ -192,6 +205,25 @@ public class Altitude: Latitude {
     }
 }
 
+/// The type of position of an object depending on which corrections are applied to the coordinates.
+public enum PositionType {
+    
+    /// The mean position of an object, i.e. the position of the object as seen from the barycentre of the
+    /// solar system, corrected for proper motion (in case of a star), but not for nutation.
+    case meanPosition
+    
+    /// The true position of an object, i.e. the position of the object as seen from the barycentre of the
+    /// solar system, corrected for proper motion (in case of a star), and also for nutation
+    case truePosition
+    
+    /// The apparent position of an object, i.e. the position of the object as seen from either a geocentric
+    /// observer or an observer on the surface of the Earth (a topocentric observer).
+    ///
+    /// The position is corrected for proper motion (in case of a star), and also for nutation. It should also
+    /// include the effect of parallax.
+    case apparentPosition
+}
+
 
 public struct Coordinates: Equatable, CustomStringConvertible {
     
@@ -203,12 +235,14 @@ public struct Coordinates: Equatable, CustomStringConvertible {
     
     public let system: CoordinateSystem
     
+    public let positionType: PositionType
+    
     public var distanceIsKnown: Bool
     
     public var sphericalCoordinate: SphericalCoordinates {
         get {
-            let distance : Distance? = try! _rectangularCoordinates.distance.convert(to: .metre)
-            let latitude = asin(_rectangularCoordinates.z/distance)
+            var distance : Distance? = try! _rectangularCoordinates.distance.convert(to: .metre) as! Distance
+            let latitude = asin(_rectangularCoordinates.z/distance!)
             let longitude = try! atan(_rectangularCoordinates.y, _rectangularCoordinates.x)
             if !distanceIsKnown {
                 distance = nil
@@ -238,11 +272,31 @@ public struct Coordinates: Equatable, CustomStringConvertible {
             return nil
         }
     }
-        
-    public func convert(to: CoordinateSystem) -> Coordinates throws {
-        
+    
+    public init(rectangularCoordinates: RectangularCoordinates, system: CoordinateSystem, positionType: PositionType) {
+        self._rectangularCoordinates = rectangularCoordinates
+        self.system = system
+        self.positionType = positionType
+        self.distanceIsKnown = true
     }
     
+    public init(sphericalCoordinates: SphericalCoordinates, system: CoordinateSystem, positionType: PositionType) {
+        let distance = sphericalCoordinates.distance != nil ? sphericalCoordinates.distance : try! Distance(1.0, unit: .metre)
+        let r = cos(sphericalCoordinates.latitude) * distance!
+        self._rectangularCoordinates = RectangularCoordinates(
+            x: cos(sphericalCoordinates.longitude) * r as! Distance,
+            y: sin(sphericalCoordinates.longitude) * r as! Distance,
+            z: sin(sphericalCoordinates.latitude) * distance! as! Distance
+        )
+        self.system = system
+        self.positionType = positionType
+        self.distanceIsKnown = sphericalCoordinates.distance != nil ? true : false
+    }
+        
+//    public func convert(to: CoordinateSystem) throws -> Coordinates {
+//
+//    }
+//
     public static func == (lhs: Coordinates, rhs: Coordinates) -> Bool {
         return false
     }

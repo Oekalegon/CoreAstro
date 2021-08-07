@@ -9,7 +9,6 @@ import Foundation
 
 public enum CoordinateSystemOrigin : Equatable {
     case barycentric
-    case heliocentric
     case geocentric
     case topcentric(location: GeographicalLocation)
 }
