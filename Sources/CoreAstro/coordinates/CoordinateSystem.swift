@@ -29,6 +29,15 @@ public struct CoordinateSystem: Equatable {
     public let epoch: Date?
     public let origin: CoordinateSystemOrigin
     
+    /// Defines whether the longitude defined for spherical coordinates in this coordinate system increases
+    /// anti-clockwise or clockwise as viewed from an observer at the origin with the North pole of the
+    /// coordinate system (the Z-axis) pointing upwards.
+    ///
+    /// All celestial coordinate systems are ani-clockwise except the horizontal (azimuthal) coordinate
+    /// system which increases clockwise (from North at 0° Azimuth, East 90°, South 180°, West 270° and
+    /// back to North).
+    public let antiClockwise: Bool
+    
     public static let ICRS = CoordinateSystem(type: .ICRS, origin: .barycentric)
     public static let equatorialJ2000 = CoordinateSystem(type: .equatorial, equinox: .J2000, origin: .barycentric)
     public static let equatorialJ2050 = CoordinateSystem(type: .equatorial, equinox: .J2050, origin: .barycentric)
@@ -40,13 +49,14 @@ public struct CoordinateSystem: Equatable {
     }
     
     public static func horizontal(at epoch: Date, for location: GeographicalLocation) -> CoordinateSystem {
-        return CoordinateSystem(type: .horizontal, epoch: epoch, origin: .topcentric(location: location))
+        return CoordinateSystem(type: .horizontal, epoch: epoch, origin: .topcentric(location: location), antiClockwise: false)
     }
     
-    private init(type: CoordinateSystemType, equinox: Date? = nil, epoch: Date? = nil, origin: CoordinateSystemOrigin) {
+    private init(type: CoordinateSystemType, equinox: Date? = nil, epoch: Date? = nil, origin: CoordinateSystemOrigin, antiClockwise: Bool = true) {
         self.type = type
         self.equinox = equinox
         self.epoch = epoch
         self.origin = origin
+        self.antiClockwise = antiClockwise
     }
 }
