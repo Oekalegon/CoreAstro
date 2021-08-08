@@ -106,3 +106,18 @@ public func nutation(on date: Date) -> (Δψ: Angle, Δε: Angle) {
     }
     return (Δψ: try! Angle(Δψ, unit: .arcsecond), Δε: try! Angle(Δε, unit: .arcsecond))
 }
+
+public func meanObliquityOfTheEcliptic(on date: Date) throws -> Angle {
+    let T = date.julianCenturiesSinceJ2000.scalarValue
+    let U = T / 100.0
+    let ε0_val = 84381.448 - 4680.93*U - 1.55*pow(U,2) + 1999.25*pow(U,3) - 51.38*pow(U,4) - 249.67*pow(U,5) - 39.05*pow(U,6) + 7.12*pow(U,7) + 27.87*pow(U,8) + 5.79*pow(U,9) + 2.45*pow(U,10)
+    let ε0 = try! Angle(symbol:"ε_0", ε0_val/3600.0, unit: .degree)
+    return ε0
+}
+
+public func trueObliquityOfTheEcliptic(on date: Date) throws -> Angle {
+    let ε0 = try meanObliquityOfTheEcliptic(on: date)
+    let nutation = nutation(on: date)
+    let ε = try! Angle(symbol:"ε", measure: ε0 + nutation.Δε)
+    return ε
+}

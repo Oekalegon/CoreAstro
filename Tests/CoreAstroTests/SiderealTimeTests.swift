@@ -81,6 +81,7 @@ final class SiderealTimeTests: XCTestCase {
         let θ = location.siderealTime(on: Date(julianDay: JD), positionType: .apparentPosition)
         let expected : Double = (8.0-5.0)*15.0 + (34.0-8.0)*0.25 + (56.853-15.7)*0.25/60.0
         XCTAssertNotNil(θ)
+
         XCTAssertEqual(θ.scalarValue, expected, accuracy: 0.000003)
         XCTAssertEqual(θ.unit, CoreMeasure.Unit.degree)
         XCTAssertEqual(θ.positionType, .apparentPosition)
