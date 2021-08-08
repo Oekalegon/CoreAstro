@@ -6,8 +6,9 @@
 //
 
 import CoreMeasure
+import Foundation
 
-private func nutationalArguments(T: TimeInterval) -> (D: Angle, M: Angle, Mprime: Angle, F: Angle, Ω: Angle) {
+fileprivate func nutationalArguments(T: TimeInterval) -> (D: Angle, M: Angle, Mprime: Angle, F: Angle, Ω: Angle) {
     let T1 = T.scalarValue
     let T2 = T1 * T1
     let T3 = T2 * T1
@@ -17,15 +18,15 @@ private func nutationalArguments(T: TimeInterval) -> (D: Angle, M: Angle, Mprime
     let F = 93.27191 + 483202.017538 * T1 - 0.0036825 * T2 + T3 / 327270
     let Ω = 125.04452 - 1934.136261 * T1 + 0.0020708 * T2 + T3 / 450000
     return (
-        D: try! Angle(D, unit: .degree),
-        M: try! Angle(M, unit: .degree),
-        Mprime: try! Angle(Mprime, unit: .degree),
-        F: try! Angle(F, unit: .degree),
-        Ω: try! Angle(Ω, unit: .degree)
+        D: try! Longitude(D, unit: .degree),
+        M: try! Longitude(M, unit: .degree),
+        Mprime: try! Longitude(Mprime, unit: .degree),
+        F: try! Longitude(F, unit: .degree),
+        Ω: try! Longitude(Ω, unit: .degree)
     )
 }
 
-private let periodicTerms : [[Double]] =
+fileprivate let periodicTerms : [[Double]] =
     [
         [ 0,  0,  0,  0,  1,  -171996,  -174.2,  92025,   8.9],
         [-2,  0,  0,  2,  2,   -13187,    -1.6,   5736,  -3.1],
@@ -91,3 +92,17 @@ private let periodicTerms : [[Double]] =
         [ 0,  0,  3,  2,  2,       -3,     0.0,      0,   0.0],
         [ 2, -1,  0,  2,  2,       -3,     0.0,      0,   0.0],
     ]
+
+public func nutation(on date: Date) -> (Δψ: Angle, Δε: Angle) {
+    let T = date.julianCenturiesSinceJ2000
+    let arguments = nutationalArguments(T: T)
+    var Δψ = 0.0
+    var Δε = 0.0
+    for term in periodicTerms {
+        let argument = term[0] * arguments.D.scalarValue + term[1] * arguments.M.scalarValue + term[2] * arguments.Mprime.scalarValue + term[3] * arguments.F.scalarValue + term[4] * arguments.Ω.scalarValue
+        Δψ = Δψ + (term[5] + term[6] * T.scalarValue)*0.0001 * sin(argument/180.0*Double.pi)
+        Δε = Δε + (term[7] + term[8] * T.scalarValue)*0.0001 * cos(argument/180.0*Double.pi)
+        print("Δψ = \(Δψ)\t\tΔε = \(Δε)")
+    }
+    return (Δψ: try! Angle(Δψ, unit: .arcsecond), Δε: try! Angle(Δε, unit: .arcsecond))
+}
