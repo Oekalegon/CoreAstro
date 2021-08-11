@@ -110,6 +110,9 @@ public func nutation(on date: Date) -> (Δψ: Angle, Δε: Angle) {
 public func meanObliquityOfTheEcliptic(on date: Date) throws -> Angle {
     let T = date.julianCenturiesSinceJ2000.scalarValue
     let U = T / 100.0
+    if fabs(U) >= 1.0 { // The range over which the obliquity can be calculated is +- 10.000 years from J2000, results outside are meaningless and therefore cause an error.
+        throw QuantityValidationError.outOfRange
+    }
     let ε0_val = 84381.448 - 4680.93*U - 1.55*pow(U,2) + 1999.25*pow(U,3) - 51.38*pow(U,4) - 249.67*pow(U,5) - 39.05*pow(U,6) + 7.12*pow(U,7) + 27.87*pow(U,8) + 5.79*pow(U,9) + 2.45*pow(U,10)
     let ε0 = try! Angle(symbol:"ε_0", ε0_val/3600.0, unit: .degree)
     return ε0

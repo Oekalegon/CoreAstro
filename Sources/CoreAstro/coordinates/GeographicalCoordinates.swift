@@ -25,14 +25,14 @@ public struct GeographicalLocation : Equatable {
         self.name = name
     }
     
-    public var siderealTime : SiderealTime {
+    public var siderealTime : SiderealTime? {
         get {
-            return siderealTime(on: Date())
+            return try? siderealTime(on: Date())
         }
     }
     
-    public func siderealTime(on date: Date, positionType: PositionType = .apparentPosition) -> SiderealTime {
-        return SiderealTime(on: date, at: self, positionType: positionType)
+    public func siderealTime(on date: Date, positionType: PositionType = .apparentPosition) throws -> SiderealTime {
+        return try SiderealTime(on: date, at: self, positionType: positionType)
     }
 }
 

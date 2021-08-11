@@ -55,11 +55,11 @@ final class SiderealTimeTests: XCTestCase {
                                                  latitude: Latitude(38.9213888888889, unit: .degree),
                                                  elevation: nil)
         let JD = JulianDay(2446896.30625)
-        let θ = location.siderealTime(on: Date(julianDay: JD), positionType: .meanPosition)
+        let θ = try? location.siderealTime(on: Date(julianDay: JD), positionType: .meanPosition)
         XCTAssertNotNil(θ)
-        XCTAssertEqual(θ.scalarValue, 128.7378734-77.065555555556, accuracy: 0.000003)
-        XCTAssertEqual(θ.unit, CoreMeasure.Unit.degree)
-        XCTAssertEqual(θ.positionType, .meanPosition)
+        XCTAssertEqual(θ!.scalarValue, 128.7378734-77.065555555556, accuracy: 0.000003)
+        XCTAssertEqual(θ!.unit, CoreMeasure.Unit.degree)
+        XCTAssertEqual(θ!.positionType, .meanPosition)
     }
     
     func testApparentSiderealTime() throws {
@@ -78,12 +78,12 @@ final class SiderealTimeTests: XCTestCase {
                                                  latitude: Latitude(38.9213888888889, unit: .degree),
                                                  elevation: nil)
         let JD = JulianDay(2446896.30625)
-        let θ = location.siderealTime(on: Date(julianDay: JD), positionType: .apparentPosition)
+        let θ = try? location.siderealTime(on: Date(julianDay: JD), positionType: .apparentPosition)
         let expected : Double = (8.0-5.0)*15.0 + (34.0-8.0)*0.25 + (56.853-15.7)*0.25/60.0
         XCTAssertNotNil(θ)
 
-        XCTAssertEqual(θ.scalarValue, expected, accuracy: 0.000003)
-        XCTAssertEqual(θ.unit, CoreMeasure.Unit.degree)
-        XCTAssertEqual(θ.positionType, .apparentPosition)
+        XCTAssertEqual(θ!.scalarValue, expected, accuracy: 0.000003)
+        XCTAssertEqual(θ!.unit, CoreMeasure.Unit.degree)
+        XCTAssertEqual(θ!.positionType, .apparentPosition)
     }
 }
