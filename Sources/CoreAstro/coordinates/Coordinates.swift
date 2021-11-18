@@ -67,6 +67,17 @@ public struct RectangularCoordinates {
 
 public class Distance: Quantity {
     
+    /// Creates a copy of the ``Measure`` in a specific `Distance`.
+    /// - Parameters:
+    ///   - symbol: An optional symbol used for the quantity.
+    ///   - measure: The measure to be copied in the quanity.
+    public override init(symbol: String? = nil, measure: Measure) throws {
+        if measure.unit.dimensions != Unit.metre.dimensions {
+            throw UnitValidationError.differentDimensionality
+        }
+        try super.init(symbol: symbol, measure: measure)
+    }
+    
     public override init(symbol: String? = nil, _ distance: Double, error: Double? = nil, unit: Unit) throws {
         if unit.dimensions != Unit.metre.dimensions {
             throw UnitValidationError.differentDimensionality
@@ -219,13 +230,16 @@ public enum PositionType {
     /// The apparent position of an object, i.e. the position of the object as seen from either a geocentric
     /// observer or an observer on the surface of the Earth (a topocentric observer).
     ///
-    /// The position is corrected for proper motion (in case of a star), and also for nutation. It should also
-    /// include the effect of parallax.
+    /// The position is corrected for proper motion (in case of a star), and also for nutation and abberation.
+    /// It should also include the effect of parallax.
     case apparentPosition
 }
 
 
 public struct Coordinates: Equatable, CustomStringConvertible {
+    
+    /// The equatorial coodinates of the galactic pole in B1950.0.
+    private static let galacticNorthPole = SphericalCoordinates(longitude: try! Longitude(192.25, unit: .degree), latitude: try! Latitude(27.4, unit: .degree))
     
     // The Rectangular Coordinates of the Coordinates. NB If the distance to
     // the object is unknown, these coordinates will still be used but with
@@ -233,15 +247,21 @@ public struct Coordinates: Equatable, CustomStringConvertible {
     // should be returned in that case.
     private var _rectangularCoordinates: RectangularCoordinates
     
+    /// The coordinate system in which the coordinates are defined.
     public let system: CoordinateSystem
     
+    /// The type of coordinates, either *mean*, *true*, or *apparent*, depending on which gravitational
+    /// effects are taken into account.
     public let positionType: PositionType
     
+    /// A flag to denote whether the distance is known.
     public var distanceIsKnown: Bool
     
-    public var sphericalCoordinate: SphericalCoordinates {
+    /// The spherical coordinates (longitude, latitude, and optionally distance) of the coordinates on the
+    /// celestial sphere.
+    public var sphericalCoordinates: SphericalCoordinates {
         get {
-            var distance : Distance? = try! _rectangularCoordinates.distance.convert(to: .metre) as! Distance
+            var distance : Distance? = try! Distance(measure: try! _rectangularCoordinates.distance.convert(to: .metre))
             let latitude = asin(_rectangularCoordinates.z/distance!)
             let longitude = try! atan(_rectangularCoordinates.y, _rectangularCoordinates.x)
             if !distanceIsKnown {
@@ -262,6 +282,11 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         }
     }
     
+    
+    /// The coordinates expressed as rectangular coordinates with an X, Y, and Z component.
+    ///
+    /// If the distance to an object is not known, `nil` will be returned. Many objects will only be
+    /// defined using spherical coordinates on the celestial sphere without a known distance.
     public var rectangularCoordinates: RectangularCoordinates? {
         get {
             if distanceIsKnown {
@@ -273,6 +298,12 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         }
     }
     
+    /// Creates a new set of coordinates specified by the given rectangular coordinates defined in the
+    /// specified coordinate system.
+    /// - Parameters:
+    ///   - rectangularCoordinates: The rectangular coordinates.
+    ///   - system: The coordinate system in which these coordinates are defined.
+    ///   - positionType: The type of position, either the *mean*, *true*, or *apparent* position.
     public init(rectangularCoordinates: RectangularCoordinates, system: CoordinateSystem, positionType: PositionType) {
         self._rectangularCoordinates = rectangularCoordinates
         self.system = system
@@ -280,23 +311,85 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         self.distanceIsKnown = true
     }
     
+    /// Creates a new set of coordinates specified by the given spherical coordinates on the celestial
+    /// sphere, and defined in the specified coordinate system.
+    /// - Parameters:
+    ///   - sphericalCoordinates: The spherical coordinates.
+    ///   - system: The coordinate system in which these coordinates are defined.
+    ///   - positionType: The type of position, either the *mean*, *true*, or *apparent* position.
     public init(sphericalCoordinates: SphericalCoordinates, system: CoordinateSystem, positionType: PositionType) {
         let distance = sphericalCoordinates.distance != nil ? sphericalCoordinates.distance : try! Distance(1.0, unit: .metre)
         let r = cos(sphericalCoordinates.latitude) * distance!
         self._rectangularCoordinates = RectangularCoordinates(
-            x: cos(sphericalCoordinates.longitude) * r as! Distance,
-            y: sin(sphericalCoordinates.longitude) * r as! Distance,
-            z: sin(sphericalCoordinates.latitude) * distance! as! Distance
+            x: try! Distance(measure: cos(sphericalCoordinates.longitude) * r),
+            y: try! Distance(measure: sin(sphericalCoordinates.longitude) * r),
+            z: try! Distance(measure: sin(sphericalCoordinates.latitude) * distance!)
         )
         self.system = system
         self.positionType = positionType
         self.distanceIsKnown = sphericalCoordinates.distance != nil ? true : false
     }
         
-//    public func convert(to: CoordinateSystem) throws -> Coordinates {
-//
-//    }
-//
+    public func convert(to target: CoordinateSystem, positionType: PositionType) throws -> Coordinates {
+        // TODO: Take the type of position into account
+        if self.system == target && self.positionType == positionType {
+            return self
+        }
+        if self.system.type == .equatorial && self.system.equinox == .J2000 {
+            if target.type == .elliptical {
+                let ε = try meanObliquityOfTheEcliptic(on: target.epoch!)
+                let np = SphericalCoordinates(longitude: try Longitude(270.0, unit: .degree), latitude: try Latitude(90.0-ε.scalarValue, unit: .degree))
+                let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: try Longitude(0, unit: .degree), coordinates: self._rectangularCoordinates)
+                let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
+                return newcoord
+            }
+        } else if target.type == .equatorial && target.equinox == .J2000 {
+            
+        } else {
+            let intermediate = try self.convert(to: .equatorialJ2000, positionType: positionType)
+            return try intermediate.convert(to: target, positionType: positionType)
+        }
+        throw CoreAstroError.notImplemented
+    }
+    
+    private static func convertFromEquatorial(systemNorthPole np: SphericalCoordinates, ascendingNode ω: Longitude, coordinates: RectangularCoordinates) -> RectangularCoordinates {
+        let γ = try! -np.longitude
+        let β = try! Angle(measure: try! Angle(90, unit: .degree) - np.latitude)
+        let γ2 = try! Angle(measure: -γ - ω)
+        let rect1 = Coordinates.rotate(aroundZ: γ, coordinates: coordinates)
+        let rect2 = Coordinates.rotate(aroundY: try! -β, coordinates: rect1)
+        let rect3 = Coordinates.rotate(aroundZ: γ2, coordinates: rect2)
+        return rect3
+    }
+    
+    private static func convertToEquatorial(systemNorthPole np: SphericalCoordinates, ascendingNode ω: Longitude, coordinates: RectangularCoordinates) -> RectangularCoordinates {
+        let γ = np.longitude
+        let β = try! Angle(measure: try! Angle(90, unit: .degree) - np.latitude)
+        let γ2 = try! Angle(measure: -γ - ω)
+        let rect1 = Coordinates.rotate(aroundZ: try! -γ2, coordinates: coordinates)
+        let rect2 = Coordinates.rotate(aroundY: β, coordinates: rect1)
+        let rect3 = Coordinates.rotate(aroundZ: try! -γ, coordinates: rect2)
+        return rect3
+    }
+    
+    private static func rotate(aroundY β: Angle, coordinates: RectangularCoordinates) -> RectangularCoordinates {
+        let cos_β = cos(β).scalarValue
+        let sin_β = sin(β).scalarValue
+        let x = try! coordinates.x * cos_β + coordinates.z * sin_β
+        let y = coordinates.y
+        let z = try! coordinates.x * -sin_β + coordinates.z * cos_β
+        return RectangularCoordinates(x: try! Distance(measure:x), y: try! Distance(measure:y), z: try! Distance(measure:z))
+    }
+    
+    private static func rotate(aroundZ γ: Angle, coordinates: RectangularCoordinates) -> RectangularCoordinates {
+        let cos_γ = cos(γ).scalarValue
+        let sin_γ = sin(γ).scalarValue
+        let x = try!coordinates.x * cos_γ - coordinates.y * sin_γ
+        let y = try! coordinates.x * sin_γ + coordinates.y * cos_γ
+        let z = coordinates.z
+        return RectangularCoordinates(x: try! Distance(measure:x), y: try! Distance(measure:y), z: try! Distance(measure:z))
+    }
+
     public static func == (lhs: Coordinates, rhs: Coordinates) -> Bool {
         return false
     }

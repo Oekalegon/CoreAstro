@@ -43,6 +43,10 @@ public struct CoordinateSystem: Equatable {
     public static let equatorialB1950 = CoordinateSystem(type: .equatorial, equinox: .B1950, origin: .barycentric)
     public static let galactic = CoordinateSystem(type: .galactic, origin: .barycentric)
     
+    public static func equatorial(for equinox: Date, from origin: CoordinateSystemOrigin = .geocentric) -> CoordinateSystem {
+        return CoordinateSystem(type: .equatorial, equinox: equinox, origin: origin, antiClockwise: false)
+    }
+    
     public static func ecliptical(at epoch: Date, from origin: CoordinateSystemOrigin = .geocentric) -> CoordinateSystem {
         return CoordinateSystem(type: .elliptical, epoch: epoch, origin: origin)
     }

@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "5BA81FDB-7616-423B-8E17-1FD6BAEA55E4",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:..\/CoreAstro",
+        "identifier" : "CoreAstroTests",
+        "name" : "CoreAstroTests"
+      }
+    }
+  ],
+  "version" : 1
+}
