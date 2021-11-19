@@ -10,7 +10,7 @@ import Foundation
 public enum CoordinateSystemOrigin : Equatable {
     case barycentric
     case geocentric
-    case topcentric(location: GeographicalLocation)
+    case topocentric(location: GeographicalLocation)
 }
 
 public enum CoordinateSystemType : Equatable {
@@ -44,7 +44,7 @@ public struct CoordinateSystem: Equatable {
     public static let galactic = CoordinateSystem(type: .galactic, origin: .barycentric)
     
     public static func equatorial(for equinox: Date, from origin: CoordinateSystemOrigin = .geocentric) -> CoordinateSystem {
-        return CoordinateSystem(type: .equatorial, equinox: equinox, origin: origin, antiClockwise: false)
+        return CoordinateSystem(type: .equatorial, equinox: equinox, origin: origin)
     }
     
     public static func ecliptical(at epoch: Date, from origin: CoordinateSystemOrigin = .geocentric) -> CoordinateSystem {
@@ -52,7 +52,7 @@ public struct CoordinateSystem: Equatable {
     }
     
     public static func horizontal(at epoch: Date, for location: GeographicalLocation) -> CoordinateSystem {
-        return CoordinateSystem(type: .horizontal, epoch: epoch, origin: .topcentric(location: location), antiClockwise: false)
+        return CoordinateSystem(type: .horizontal, epoch: epoch, origin: .topocentric(location: location), antiClockwise: false)
     }
     
     private init(type: CoordinateSystemType, equinox: Date? = nil, epoch: Date? = nil, origin: CoordinateSystemOrigin, antiClockwise: Bool = true) {
