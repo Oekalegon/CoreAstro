@@ -263,7 +263,10 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         get {
             var distance : Distance? = try! Distance(measure: try! _rectangularCoordinates.distance.convert(to: .metre))
             let latitude = asin(_rectangularCoordinates.z/distance!)
-            let longitude = try! atan(_rectangularCoordinates.y, _rectangularCoordinates.x)
+            var longitude = try! atan(_rectangularCoordinates.y, _rectangularCoordinates.x)
+            if !self.system.antiClockwise {
+                longitude = try! -longitude
+            }
             if !distanceIsKnown {
                 distance = nil
             }
@@ -320,9 +323,13 @@ public struct Coordinates: Equatable, CustomStringConvertible {
     public init(sphericalCoordinates: SphericalCoordinates, system: CoordinateSystem, positionType: PositionType) {
         let distance = sphericalCoordinates.distance != nil ? sphericalCoordinates.distance : try! Distance(1.0, unit: .metre)
         let r = cos(sphericalCoordinates.latitude) * distance!
+        var longitude = sphericalCoordinates.longitude
+        if !system.antiClockwise {
+            longitude = try! -longitude
+        }
         self._rectangularCoordinates = RectangularCoordinates(
-            x: try! Distance(measure: cos(sphericalCoordinates.longitude) * r),
-            y: try! Distance(measure: sin(sphericalCoordinates.longitude) * r),
+            x: try! Distance(measure: cos(longitude) * r),
+            y: try! Distance(measure: sin(longitude) * r),
             z: try! Distance(measure: sin(sphericalCoordinates.latitude) * distance!)
         )
         self.system = system
@@ -342,9 +349,61 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: try Longitude(0, unit: .degree), coordinates: self._rectangularCoordinates)
                 let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
                 return newcoord
+            } else if target.type == .galactic {
+                let np = SphericalCoordinates(longitude: try Longitude(192.85948402, unit: .degree), latitude: try Latitude(27.12829637, unit: .degree))
+                let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: try Longitude(249.9276045998651, unit: .degree), coordinates: self._rectangularCoordinates)
+                let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
+                return newcoord
+            } else if target.type == .horizontal {
+                if target.epoch == nil {
+                    throw CoreAstroError.epochNotDefined
+                }
+                var geographicalLocation: GeographicalLocation? = nil
+                switch target.origin {
+                case .topocentric(let location):
+                    geographicalLocation = location
+                default:
+                    throw CoreAstroError.topographicLocationNotDefined
+                }
+                let ϕ = try! Latitude(measure: geographicalLocation!.latitude.convert(to: .degree))
+                let θ = try SiderealTime(on: target.epoch!, at: geographicalLocation!, positionType: positionType)
+                let ω = try Longitude(θ.convert(to: .degree).scalarValue + 180, unit: .degree)
+                let np = SphericalCoordinates(longitude: Longitude(angle: θ), latitude: ϕ)
+                let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: ω, coordinates: self._rectangularCoordinates)
+                let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
+                return newcoord
             }
         } else if target.type == .equatorial && target.equinox == .J2000 {
-            
+            if self.system.type == .elliptical {
+                let ε = try meanObliquityOfTheEcliptic(on: self.system.epoch!)
+                let np = SphericalCoordinates(longitude: try Longitude(270.0, unit: .degree), latitude: try Latitude(90.0-ε.scalarValue, unit: .degree))
+                let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: try Longitude(0, unit: .degree), coordinates: self._rectangularCoordinates)
+                let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
+                return newcoord
+            } else if self.system.type == .galactic {
+                let np = SphericalCoordinates(longitude: try Longitude(192.85948402, unit: .degree), latitude: try Latitude(27.12829637, unit: .degree))
+                let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: try Longitude(249.9276045998651, unit: .degree), coordinates: self._rectangularCoordinates)
+                let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
+                return newcoord
+            } else if self.system.type == .horizontal {
+                if self.system.epoch == nil {
+                    throw CoreAstroError.epochNotDefined
+                }
+                var geographicalLocation: GeographicalLocation? = nil
+                switch self.system.origin {
+                case .topocentric(let location):
+                    geographicalLocation = location
+                default:
+                    throw CoreAstroError.topographicLocationNotDefined
+                }
+                let ϕ = try! Latitude(measure: geographicalLocation!.latitude.convert(to: .degree))
+                let θ = try SiderealTime(on: self.system.epoch!, at: geographicalLocation!, positionType: positionType)
+                let ω = try Longitude(θ.convert(to: .degree).scalarValue + 180, unit: .degree)
+                let np = SphericalCoordinates(longitude: Longitude(angle: θ), latitude: ϕ)
+                let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: ω, coordinates: self._rectangularCoordinates)
+                let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
+                return newcoord
+            }
         } else {
             let intermediate = try self.convert(to: .equatorialJ2000, positionType: positionType)
             return try intermediate.convert(to: target, positionType: positionType)
@@ -365,10 +424,10 @@ public struct Coordinates: Equatable, CustomStringConvertible {
     private static func convertToEquatorial(systemNorthPole np: SphericalCoordinates, ascendingNode ω: Longitude, coordinates: RectangularCoordinates) -> RectangularCoordinates {
         let γ = np.longitude
         let β = try! Angle(measure: try! Angle(90, unit: .degree) - np.latitude)
-        let γ2 = try! Angle(measure: -γ - ω)
+        let γ2 = try! Angle(measure: γ - ω)
         let rect1 = Coordinates.rotate(aroundZ: try! -γ2, coordinates: coordinates)
         let rect2 = Coordinates.rotate(aroundY: β, coordinates: rect1)
-        let rect3 = Coordinates.rotate(aroundZ: try! -γ, coordinates: rect2)
+        let rect3 = Coordinates.rotate(aroundZ: γ, coordinates: rect2)
         return rect3
     }
     
@@ -388,6 +447,52 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         let y = try! coordinates.x * sin_γ + coordinates.y * cos_γ
         let z = coordinates.z
         return RectangularCoordinates(x: try! Distance(measure:x), y: try! Distance(measure:y), z: try! Distance(measure:z))
+    }
+    
+    /// Calculates the angular separation between this set of coordinates to another set of coordinates.
+    /// - Parameter coordinates: The coordinates to which the angular separation should be calculated
+    /// - Returns: The angular separation
+    public func angularSeparation(to coordinates: Coordinates) throws -> Angle {
+        let converted = try coordinates.convert(to: self.system, positionType: self.positionType)
+        let dlat = try converted.sphericalCoordinates.latitude - self.sphericalCoordinates.latitude
+        let dlon = try converted.sphericalCoordinates.longitude - self.sphericalCoordinates.longitude
+        let havd = try hav(try Angle(measure:dlat)) + cos(self.sphericalCoordinates.latitude) * cos(coordinates.sphericalCoordinates.latitude) * hav(try Angle(measure:dlon))
+        let d = ahav(havd)
+        return d
+    }
+    
+    /// Calculates the angular separation between two sets of coordinates.
+    /// - Parameters:
+    ///   - coordinates1: The first set of coordinates
+    ///   - coordinates2: The second set of coordiantes
+    /// - Returns: The angular separation
+    public static func angularSeparation(between coordinates1: Coordinates, and coordinates2: Coordinates) throws -> Angle {
+        return try coordinates1.angularSeparation(to: coordinates2)
+    }
+    
+    /// Calculates the relative position angle to the specified set of coordinates.
+    ///
+    /// The origin of the position angle is North (0°). If the set of coordinates are due east of this set of coordinates,
+    /// the position angle will be 90°, due south 180°, and west 270°.
+    /// - Parameter coordinates: The coordinates to which the position angle should be calculated
+    /// - Returns: The relative position angle from North, towards East.
+    public func relativePositionAngle(to coordinates: Coordinates) throws -> NormalisedAngle {
+        let converted = try coordinates.convert(to: self.system, positionType: self.positionType)
+        let dlon = try Angle(measure: try converted.sphericalCoordinates.longitude - self.sphericalCoordinates.longitude)
+        let angle = try atan(sin(dlon), cos(self.sphericalCoordinates.latitude)*tan(coordinates.sphericalCoordinates.latitude) - sin(self.sphericalCoordinates.latitude)*cos(dlon))
+        return NormalisedAngle(angle: angle)
+    }
+    
+    /// Calculates the relative position angle from the first set of coordinates to the second set of coordinates.
+    ///
+    /// The origin of the position angle is North (0°). If the second set of coordinates are due east to the first set of coordinates,
+    /// the position angle will be 90°, due south 180°, and west 270°.
+    /// - Parameters:
+    ///   - coodinates1: The set of coordinates from which the position angle should be calculated
+    ///   - coordinates2: The set of coordinates to which the position angle should be calculated
+    /// - Returns: The relative position angle from North, towards East.
+    public static func relativePositionAngle(from coodinates1: Coordinates, to coordinates2: Coordinates) throws -> NormalisedAngle {
+        return try coodinates1.relativePositionAngle(to: coordinates2)
     }
 
     public static func == (lhs: Coordinates, rhs: Coordinates) -> Bool {

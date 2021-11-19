@@ -16,4 +16,10 @@ public enum CoreAstroError: Error {
     /// This may also happen when a method is not implemented for specific conditions (e.g. arguments
     /// to a function).
     case notImplemented
+    
+    /// Thrown when the epoch was not defined.
+    case epochNotDefined
+    
+    /// Thrown when the topographic location of the observer was not defined.
+    case topographicLocationNotDefined
 }
