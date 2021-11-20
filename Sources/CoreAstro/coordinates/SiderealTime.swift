@@ -12,7 +12,7 @@ public class SiderealTime: NormalisedAngle {
     
     public let positionType: PositionType
     
-    public init(_ scalarValue: Double, error: Double? = nil, unit: CoreMeasure.Unit, positionType: PositionType = .meanPosition) throws {
+    public init(_ scalarValue: Double, error: Double? = nil, unit: CoreMeasure.OMUnit, positionType: PositionType = .meanPosition) throws {
         self.positionType = positionType
         try super.init(symbol: "θ", scalarValue, error: error, unit: unit, range: (min: Measure(0, unit: .degree), max: Measure(360, unit: .degree)))
     }

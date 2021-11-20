@@ -72,14 +72,14 @@ public class Distance: Quantity {
     ///   - symbol: An optional symbol used for the quantity.
     ///   - measure: The measure to be copied in the quanity.
     public override init(symbol: String? = nil, measure: Measure) throws {
-        if measure.unit.dimensions != Unit.metre.dimensions {
+        if measure.unit.dimensions != OMUnit.metre.dimensions {
             throw UnitValidationError.differentDimensionality
         }
         try super.init(symbol: symbol, measure: measure)
     }
     
-    public override init(symbol: String? = nil, _ distance: Double, error: Double? = nil, unit: Unit) throws {
-        if unit.dimensions != Unit.metre.dimensions {
+    public override init(symbol: String? = nil, _ distance: Double, error: Double? = nil, unit: OMUnit) throws {
+        if unit.dimensions != OMUnit.metre.dimensions {
             throw UnitValidationError.differentDimensionality
         }
         try super.init(symbol: symbol, distance, error: error, unit: unit)
@@ -98,7 +98,7 @@ public class RightAscension: Longitude {
     ///   - unit: The unit of the right ascension (default is degrees).
     /// - Throws: A ``UnitValidationError`` when the dimensions of the value do not
     /// correspond to the dimensions of the quantity.
-    public init(_ scalarValue: Double, error: Double? = nil, unit: Unit = Unit.degree) throws {
+    public init(_ scalarValue: Double, error: Double? = nil, unit: OMUnit = OMUnit.degree) throws {
         try super.init(symbol: "α", scalarValue, error: error, unit: unit)
     }
 }
@@ -114,7 +114,7 @@ public class Declination: Latitude {
     ///   - unit: The unit of the declination (default is degrees).
     /// - Throws: A ``UnitValidationError`` when the dimensions of the value do not
     /// correspond to the dimensions of the quantity.
-    public init(_ scalarValue: Double, error: Double? = nil, unit: Unit = Unit.degree) throws {
+    public init(_ scalarValue: Double, error: Double? = nil, unit: OMUnit = OMUnit.degree) throws {
         try super.init(symbol: "δ", scalarValue, error: error, unit: unit)
     }
 }
@@ -130,7 +130,7 @@ public class EclipticalLongitude: Longitude {
     ///   - unit: The unit of the longitude (default is degrees).
     /// - Throws: A ``UnitValidationError`` when the dimensions of the value do not
     /// correspond to the dimensions of the quantity.
-    public init(_ scalarValue: Double, error: Double? = nil, unit: Unit = Unit.degree) throws {
+    public init(_ scalarValue: Double, error: Double? = nil, unit: OMUnit = OMUnit.degree) throws {
         try super.init(symbol: "λ", scalarValue, error: error, unit: unit)
     }
 }
@@ -146,7 +146,7 @@ public class EclipticalLatitude: Latitude {
     ///   - unit: The unit of the latitude (default is degrees).
     /// - Throws: A ``UnitValidationError`` when the dimensions of the value do not
     /// correspond to the dimensions of the quantity.
-    public init(_ scalarValue: Double, error: Double? = nil, unit: Unit = Unit.degree) throws {
+    public init(_ scalarValue: Double, error: Double? = nil, unit: OMUnit = OMUnit.degree) throws {
         try super.init(symbol: "β", scalarValue, error: error, unit: unit)
     }
 }
@@ -162,7 +162,7 @@ public class GalacticLongitude: Longitude {
     ///   - unit: The unit of the galactic longitude (default is degrees).
     /// - Throws: A ``UnitValidationError`` when the dimensions of the value do not
     /// correspond to the dimensions of the quantity.
-    public init(_ scalarValue: Double, error: Double? = nil, unit: Unit = Unit.degree) throws {
+    public init(_ scalarValue: Double, error: Double? = nil, unit: OMUnit = OMUnit.degree) throws {
         try super.init(symbol: "l", scalarValue, error: error, unit: unit)
     }
 }
@@ -178,7 +178,7 @@ public class GalacticLatitude: Latitude {
     ///   - unit: The unit of the latitude (default is degrees).
     /// - Throws: A ``UnitValidationError`` when the dimensions of the value do not
     /// correspond to the dimensions of the quantity.
-    public init(_ scalarValue: Double, error: Double? = nil, unit: Unit = Unit.degree) throws {
+    public init(_ scalarValue: Double, error: Double? = nil, unit: OMUnit = OMUnit.degree) throws {
         try super.init(symbol: "b", scalarValue, error: error, unit: unit)
     }
 }
@@ -195,7 +195,7 @@ public class Azimuth: Longitude {
     ///   - unit: The unit of the galactic longitude (default is degrees).
     /// - Throws: A ``UnitValidationError`` when the dimensions of the value do not
     /// correspond to the dimensions of the quantity.
-    public init(_ scalarValue: Double, error: Double? = nil, unit: Unit = Unit.degree) throws {
+    public init(_ scalarValue: Double, error: Double? = nil, unit: OMUnit = OMUnit.degree) throws {
         try super.init(symbol: "A", scalarValue, error: error, unit: unit)
     }
 }
@@ -211,7 +211,7 @@ public class Altitude: Latitude {
     ///   - unit: The unit of the altitude (default is degrees).
     /// - Throws: A ``UnitValidationError`` when the dimensions of the value do not
     /// correspond to the dimensions of the quantity.
-    public init(_ scalarValue: Double, error: Double? = nil, unit: Unit = Unit.degree) throws {
+    public init(_ scalarValue: Double, error: Double? = nil, unit: OMUnit = OMUnit.degree) throws {
         try super.init(symbol: "h", scalarValue, error: error, unit: unit)
     }
 }

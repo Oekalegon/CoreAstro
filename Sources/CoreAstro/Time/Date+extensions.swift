@@ -64,8 +64,8 @@ public class TimeInterval : Quantity {
     ///   - unit: The unit for the time interval with dimensions (T=1).
     /// - Throws: A ``UnitValidationError`` when the unit has the wrong dimensions. It should
     /// only be defined within the time dimension.
-    public init(_ value: Double, error: Double? = nil, unit: CoreMeasure.Unit) throws {
-        if unit.dimensions != CoreMeasure.Unit.second.dimensions {
+    public init(_ value: Double, error: Double? = nil, unit: CoreMeasure.OMUnit) throws {
+        if unit.dimensions != CoreMeasure.OMUnit.second.dimensions {
             throw UnitValidationError.differentDimensionality
         }
         try super.init(value, error: error, unit: unit)
@@ -82,7 +82,7 @@ public class TimeInterval : Quantity {
     /// - Throws: A ``UnitValidationError`` when the scale has the wrong dimensions. It should
     /// only be defined within the time dimension.
     public init(_ value: Double, error: Double? = nil, scale: IntervalScale) throws {
-        if scale.unit.dimensions != CoreMeasure.Unit.second.dimensions {
+        if scale.unit.dimensions != CoreMeasure.OMUnit.second.dimensions {
             throw UnitValidationError.differentDimensionality
         }
         try super.init(value, error: error, scale: scale)
@@ -101,7 +101,7 @@ extension Scale {
     static let julianCentury = IntervalScale(symbol: "JC", unit: .julianCentury)
 }
 
-extension CoreMeasure.Unit {
+extension CoreMeasure.OMUnit {
     
     /// Defines a year in the Julian calendar, which is equal to 365.25 days.
     static let julianYear = UnitMultiple(symbol: "yr", factor: 365.25*86400.0, unit: .second)
@@ -182,7 +182,7 @@ extension Date {
         get {
             let djd = julianDay.scalarValue-Date.julianDay2000
             let timeInterval = try! TimeInterval(djd, error: 0.000001 / 86400.0, unit: .day)
-            let measure = try! timeInterval.convert(to: CoreMeasure.Unit.julianCentury)
+            let measure = try! timeInterval.convert(to: CoreMeasure.OMUnit.julianCentury)
             return try! TimeInterval(measure.scalarValue, error: measure.error, unit: measure.unit)
         }
     }
