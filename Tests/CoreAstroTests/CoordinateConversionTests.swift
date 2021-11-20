@@ -181,4 +181,17 @@ final class CoordinateConversionTests: XCTestCase {
         XCTAssertEqual(α.scalarValue, αr.scalarValue, accuracy: 0.000001)
         XCTAssertEqual(δ.scalarValue, δr.scalarValue, accuracy: 0.000001)
     }
+    
+    func testPrecession() throws {
+        let α_J2000_δPer = try Longitude(41.054063, unit: .degree)
+        let δ_J2000_δPer = try Latitude(49.227750, unit: .degree)
+        let eq_J2000 = Coordinates(sphericalCoordinates: SphericalCoordinates(longitude: α_J2000_δPer, latitude: δ_J2000_δPer), system: .equatorialJ2000, positionType: .meanPosition)
+        let J2028 = Date(julianDay: JulianDay(2462088.69))
+        let eqsys_J2028 = CoordinateSystem.equatorial(for: J2028, from: eq_J2000.system.origin)
+        let eq_J2028 = try eq_J2000.convert(to: eqsys_J2028, positionType: .meanPosition)
+        let α_J2028 = try eq_J2028.sphericalCoordinates.longitude.convert(to: .degree)
+        let δ_J2028 = try eq_J2028.sphericalCoordinates.latitude.convert(to: .degree)
+        XCTAssertEqual(α_J2028.scalarValue, try Longitude(41.547214, unit: .degree).scalarValue, accuracy: 0.000001)
+        XCTAssertEqual(δ_J2028.scalarValue, try Latitude(49.348483, unit: .degree).scalarValue, accuracy: 0.000001)
+    }
 }

@@ -375,7 +375,10 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 return newcoord
             } else if target.type == .equatorial {
                 // Only precession
-                let newcoord = Coordinates.precess(coordinates: self, to: target.equinox)
+                if target.equinox == nil {
+                    throw CoreAstroError.equinoxNotDefined
+                }
+                let newcoord = try Coordinates.precess(coordinates: self, to: target.equinox!)
                 return newcoord
             }
         } else if target.type == .equatorial && target.equinox == .J2000 {
@@ -410,16 +413,19 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 return newcoord
             } else if self.system.type == .equatorial {
                 // Only precession
-                let newcoord = Coordinates.precess(coordinates: target, to: self.system.equinox)
+                if self.system.equinox == nil {
+                    throw CoreAstroError.equinoxNotDefined
+                }
+                let newcoord = try Coordinates.precess(coordinates: self, to: target.equinox!)
                 return newcoord
             }
         } else if self.system.type == .equatorial && self.system.equinox != .J2000 {
-            let eq2000 = Coordinates.precess(coordinates: self, to: .J2000)
-            return eq2000.convert(to: target, positionType: positionType)
+            let eq2000 = try Coordinates.precess(coordinates: self, to: .J2000)
+            return try eq2000.convert(to: target, positionType: positionType)
         } else if target.type == .equatorial && target.equinox != .J2000 {
             let newtarget = CoordinateSystem.equatorial(for: .J2000, from: target.origin)
-            let eq2000 = self.convert(to: newtarget, positionType: positionType)
-            return eq2000.convert(to: target, positionType: positionType)
+            let eq2000 = try self.convert(to: newtarget, positionType: positionType)
+            return try eq2000.convert(to: target, positionType: positionType)
         } else {
             let intermediate = try self.convert(to: .equatorialJ2000, positionType: positionType)
             return try intermediate.convert(to: target, positionType: positionType)
@@ -485,7 +491,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         let B = cos(θ/arcsec2rad) * cos(δ_0) * cos(α_0 + ζ/arcsec2rad) - sin(θ/arcsec2rad) * sin(δ_0)
         let C = sin(θ/arcsec2rad) * cos(δ_0) * cos(α_0 + ζ/arcsec2rad) + cos(θ/arcsec2rad) * sin(δ_0)
         let αmz = atan2(A,B)
-        let α = αmz + z
+        let α = αmz + z/arcsec2rad
         let δ = asin(C)
         let longitude = try Longitude(symbol: "α", α, unit: .radian)
         let latitude = try Latitude(symbol: "δ", δ, unit: .radian)
