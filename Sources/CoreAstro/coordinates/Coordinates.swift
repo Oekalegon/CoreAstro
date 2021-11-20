@@ -7,6 +7,7 @@
 
 import CoreMeasure
 import Security
+import Foundation
 
 /// Represents the spherical coordinates of an object in the coordinate system defined for a set of
 /// coordinates.
@@ -363,7 +364,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 case .topocentric(let location):
                     geographicalLocation = location
                 default:
-                    throw CoreAstroError.topographicLocationNotDefined
+                    throw CoreAstroError.geographicLocationNotDefined
                 }
                 let ϕ = try! Latitude(measure: geographicalLocation!.latitude.convert(to: .degree))
                 let θ = try SiderealTime(on: target.epoch!, at: geographicalLocation!, positionType: positionType)
@@ -371,6 +372,10 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 let np = SphericalCoordinates(longitude: Longitude(angle: θ), latitude: ϕ)
                 let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: ω, coordinates: self._rectangularCoordinates)
                 let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
+                return newcoord
+            } else if target.type == .equatorial {
+                // Only precession
+                let newcoord = Coordinates.precess(coordinates: self, to: target.equinox)
                 return newcoord
             }
         } else if target.type == .equatorial && target.equinox == .J2000 {
@@ -394,7 +399,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 case .topocentric(let location):
                     geographicalLocation = location
                 default:
-                    throw CoreAstroError.topographicLocationNotDefined
+                    throw CoreAstroError.geographicLocationNotDefined
                 }
                 let ϕ = try! Latitude(measure: geographicalLocation!.latitude.convert(to: .degree))
                 let θ = try SiderealTime(on: self.system.epoch!, at: geographicalLocation!, positionType: positionType)
@@ -402,6 +407,10 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 let np = SphericalCoordinates(longitude: Longitude(angle: θ), latitude: ϕ)
                 let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: ω, coordinates: self._rectangularCoordinates)
                 let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
+                return newcoord
+            } else if self.system.type == .equatorial {
+                // Only precession
+                let newcoord = Coordinates.precess(coordinates: target, to: self.system.equinox)
                 return newcoord
             }
         } else {
@@ -447,6 +456,34 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         let y = try! coordinates.x * sin_γ + coordinates.y * cos_γ
         let z = coordinates.z
         return RectangularCoordinates(x: try! Distance(measure:x), y: try! Distance(measure:y), z: try! Distance(measure:z))
+    }
+    
+    /// The coordinates need to be defined in the equatorial coordinate system, otherwise an error will be thrown!
+    private static func precess(coordinates: Coordinates, to equinox: Date) throws -> Coordinates {
+        if coordinates.system.type != .equatorial && coordinates.system.type != .ICRS {
+            throw CoreAstroError.incorrectCoordinateSystem
+        }
+        if coordinates.system.equinox == nil {
+            throw CoreAstroError.equinoxNotDefined
+        }
+        let T = coordinates.system.equinox!.julianCenturiesSinceJ2000.scalarValue
+        let t = equinox.julianCenturiesSinceJ2000.scalarValue - T
+        let ζ = (2306.2181 + 1.39656*T - 0.000139*T*T) * t + (0.30188 - 0.000344*T) * t*t + 0.017998 * t*t*t
+        let z = (2306.2181 + 1.39656*T - 0.000139*T*T) * t + (1.09468 + 0.000066*T) * t*t + 0.018203 * t*t*t
+        let θ = (2004.3109 - 0.85330*T - 0.000217*T*T) * t - (0.42665 + 0.000217*T) * t*t - 0.041833 * t*t*t
+        let arcsec2rad = 180.0 * 3600 / .pi
+        let δ_0 = try coordinates.sphericalCoordinates.latitude.convert(to: .radian).scalarValue
+        let α_0 = try coordinates.sphericalCoordinates.longitude.convert(to: .radian).scalarValue
+        let A = cos(δ_0) * sin(α_0 + ζ/arcsec2rad)
+        let B = cos(θ/arcsec2rad) * cos(δ_0) * cos(α_0 + ζ/arcsec2rad) - sin(θ/arcsec2rad) * sin(δ_0)
+        let C = sin(θ/arcsec2rad) * cos(δ_0) * cos(α_0 + ζ/arcsec2rad) + cos(θ/arcsec2rad) * sin(δ_0)
+        let αmz = atan2(A,B)
+        let α = αmz + z
+        let δ = asin(C)
+        let longitude = try Longitude(symbol: "α", α, unit: .radian)
+        let latitude = try Latitude(symbol: "δ", δ, unit: .radian)
+        let nsystem = CoordinateSystem.equatorial(for: equinox, from: coordinates.system.origin)
+        return Coordinates(sphericalCoordinates: SphericalCoordinates(longitude: longitude, latitude: latitude, distance: coordinates.sphericalCoordinates.distance), system: nsystem, positionType: coordinates.positionType)
     }
     
     /// Calculates the angular separation between this set of coordinates to another set of coordinates.
