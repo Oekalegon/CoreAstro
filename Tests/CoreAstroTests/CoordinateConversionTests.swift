@@ -189,9 +189,19 @@ final class CoordinateConversionTests: XCTestCase {
         let J2028 = Date(julianDay: JulianDay(2462088.69))
         let eqsys_J2028 = CoordinateSystem.equatorial(for: J2028, from: eq_J2000.system.origin)
         let eq_J2028 = try eq_J2000.convert(to: eqsys_J2028, positionType: .meanPosition)
-        let α_J2028 = try eq_J2028.sphericalCoordinates.longitude.convert(to: .degree)
-        let δ_J2028 = try eq_J2028.sphericalCoordinates.latitude.convert(to: .degree)
-        XCTAssertEqual(α_J2028.scalarValue, try Longitude(41.547214, unit: .degree).scalarValue, accuracy: 0.000001)
-        XCTAssertEqual(δ_J2028.scalarValue, try Latitude(49.348483, unit: .degree).scalarValue, accuracy: 0.000001)
+        let α_J2028_δPer = try eq_J2028.sphericalCoordinates.longitude.convert(to: .degree)
+        let δ_J2028_δPer = try eq_J2028.sphericalCoordinates.latitude.convert(to: .degree)
+        XCTAssertEqual(α_J2028_δPer.scalarValue, try Longitude(41.547214, unit: .degree).scalarValue, accuracy: 0.000001)
+        XCTAssertEqual(δ_J2028_δPer.scalarValue, try Latitude(49.348483, unit: .degree).scalarValue, accuracy: 0.000001)
+        
+        let J1972 = Date(julianDay: JulianDay(2441427.05556))
+        let eqsys_J1972 = CoordinateSystem.equatorial(for: J1972, from: eq_J2000.system.origin)
+        let eq_J1972 = try eq_J2028.convert(to: eqsys_J1972, positionType: .meanPosition)
+        
+        let eq_J2000_2 = try eq_J1972.convert(to: .equatorialJ2000, positionType: .meanPosition)
+        let α_J2000_δPer_2 = try eq_J2000_2.sphericalCoordinates.longitude.convert(to: .degree)
+        let δ_J2000_δPer_2 = try eq_J2000_2.sphericalCoordinates.latitude.convert(to: .degree)
+        XCTAssertEqual(α_J2000_δPer_2.scalarValue, α_J2000_δPer.scalarValue, accuracy: 0.000001)
+        XCTAssertEqual(δ_J2000_δPer_2.scalarValue, δ_J2000_δPer.scalarValue, accuracy: 0.000001)
     }
 }
