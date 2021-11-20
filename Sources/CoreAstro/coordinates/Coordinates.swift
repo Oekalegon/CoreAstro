@@ -413,6 +413,13 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 let newcoord = Coordinates.precess(coordinates: target, to: self.system.equinox)
                 return newcoord
             }
+        } else if self.system.type == .equatorial && self.system.equinox != .J2000 {
+            let eq2000 = Coordinates.precess(coordinates: self, to: .J2000)
+            return eq2000.convert(to: target, positionType: positionType)
+        } else if target.type == .equatorial && target.equinox != .J2000 {
+            let newtarget = CoordinateSystem.equatorial(for: .J2000, from: target.origin)
+            let eq2000 = self.convert(to: newtarget, positionType: positionType)
+            return eq2000.convert(to: target, positionType: positionType)
         } else {
             let intermediate = try self.convert(to: .equatorialJ2000, positionType: positionType)
             return try intermediate.convert(to: target, positionType: positionType)
