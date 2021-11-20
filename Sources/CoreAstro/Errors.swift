@@ -20,6 +20,12 @@ public enum CoreAstroError: Error {
     /// Thrown when the epoch was not defined.
     case epochNotDefined
     
+    /// Thrown when the equinox was not defined.
+    case equinoxNotDefined
+    
     /// Thrown when the topographic location of the observer was not defined.
-    case topographicLocationNotDefined
+    case geographicLocationNotDefined
+    
+    /// Thrown when the coordinates are not in the expected coordinate system.
+    case incorrectCoordinateSystem
 }
