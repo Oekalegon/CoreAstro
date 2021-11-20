@@ -204,4 +204,40 @@ final class CoordinateConversionTests: XCTestCase {
         XCTAssertEqual(α_J2000_δPer_2.scalarValue, α_J2000_δPer.scalarValue, accuracy: 0.000001)
         XCTAssertEqual(δ_J2000_δPer_2.scalarValue, δ_J2000_δPer.scalarValue, accuracy: 0.000001)
     }
+    
+    func testICRS() throws {
+        let α_ICRS_δPer = try Longitude(41.054063, unit: .degree)
+        let δ_ICRS_δPer = try Latitude(49.227750, unit: .degree)
+        let eq_ICRS = Coordinates(sphericalCoordinates: SphericalCoordinates(longitude: α_ICRS_δPer, latitude: δ_ICRS_δPer), system: .ICRS, positionType: .meanPosition)
+        let J2028 = Date(julianDay: JulianDay(2462088.69))
+        let eqsys_J2028 = CoordinateSystem.equatorial(for: J2028, from: eq_ICRS.system.origin)
+        let eq_J2028 = try eq_ICRS.convert(to: eqsys_J2028, positionType: .meanPosition)
+        let α_J2028_δPer = try eq_J2028.sphericalCoordinates.longitude.convert(to: .degree)
+        let δ_J2028_δPer = try eq_J2028.sphericalCoordinates.latitude.convert(to: .degree)
+        XCTAssertEqual(α_J2028_δPer.scalarValue, try Longitude(41.547214, unit: .degree).scalarValue, accuracy: 0.000001)
+        XCTAssertEqual(δ_J2028_δPer.scalarValue, try Latitude(49.348483, unit: .degree).scalarValue, accuracy: 0.000001)
+        
+        let eq_ICRS_2 = try eq_J2028.convert(to: .ICRS, positionType: .meanPosition)
+        let α_ICRS_δPer_2 = try eq_ICRS_2.sphericalCoordinates.longitude.convert(to: .degree)
+        let δ_ICRS_δPer_2 = try eq_ICRS_2.sphericalCoordinates.latitude.convert(to: .degree)
+        XCTAssertEqual(α_ICRS_δPer_2.scalarValue, α_ICRS_δPer.scalarValue, accuracy: 0.000001)
+        XCTAssertEqual(δ_ICRS_δPer_2.scalarValue, δ_ICRS_δPer.scalarValue, accuracy: 0.000001)
+    }
+    
+    func testCompoundConversion() throws {
+        let date = Date()
+        let location = GeographicalLocation(longitude: try Longitude(-10, unit: .degree), latitude: try Latitude(60, unit: .degree), elevation: nil)
+        let α_ICRS_δPer = try Longitude(41.054063, unit: .degree)
+        let δ_ICRS_δPer = try Latitude(49.227750, unit: .degree)
+        let eq_ICRS = Coordinates(sphericalCoordinates: SphericalCoordinates(longitude: α_ICRS_δPer, latitude: δ_ICRS_δPer), system: .ICRS, positionType: .meanPosition)
+        let gal = try eq_ICRS.convert(to: .galactic, positionType: .meanPosition)
+        let hor = try gal.convert(to: .horizontal(at: date, for: location), positionType: .meanPosition)
+        let J2028 = Date(julianDay: JulianDay(2462088.69))
+        let eqsys_J2028 = CoordinateSystem.equatorial(for: J2028, from: eq_ICRS.system.origin)
+        let eq_J2028 = try hor.convert(to: eqsys_J2028, positionType: .meanPosition)
+        let α_J2028_δPer = try eq_J2028.sphericalCoordinates.longitude.convert(to: .degree)
+        let δ_J2028_δPer = try eq_J2028.sphericalCoordinates.latitude.convert(to: .degree)
+        XCTAssertEqual(α_J2028_δPer.scalarValue, try Longitude(41.547214, unit: .degree).scalarValue, accuracy: 0.000001)
+        XCTAssertEqual(δ_J2028_δPer.scalarValue, try Latitude(49.348483, unit: .degree).scalarValue, accuracy: 0.000001)
+    }
 }

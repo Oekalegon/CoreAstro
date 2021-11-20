@@ -343,7 +343,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         if self.system == target && self.positionType == positionType {
             return self
         }
-        if self.system.type == .equatorial && self.system.equinox == .J2000 {
+        if (self.system.type == .equatorial && self.system.equinox == .J2000) || self.system.type == .ICRS {
             if target.type == .elliptical {
                 let ε = try meanObliquityOfTheEcliptic(on: target.epoch!)
                 let np = SphericalCoordinates(longitude: try Longitude(270.0, unit: .degree), latitude: try Latitude(90.0-ε.scalarValue, unit: .degree))
@@ -381,7 +381,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 let newcoord = try Coordinates.precess(coordinates: self, to: target.equinox!)
                 return newcoord
             }
-        } else if target.type == .equatorial && target.equinox == .J2000 {
+        } else if (target.type == .equatorial && target.equinox == .J2000) || target.type == .ICRS {
             if self.system.type == .elliptical {
                 let ε = try meanObliquityOfTheEcliptic(on: self.system.epoch!)
                 let np = SphericalCoordinates(longitude: try Longitude(270.0, unit: .degree), latitude: try Latitude(90.0-ε.scalarValue, unit: .degree))
@@ -416,7 +416,11 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 if self.system.equinox == nil {
                     throw CoreAstroError.equinoxNotDefined
                 }
-                let newcoord = try Coordinates.precess(coordinates: self, to: target.equinox!)
+                var targetEquinox = target.equinox
+                if target.type == .ICRS {
+                    targetEquinox = .J2000
+                }
+                let newcoord = try Coordinates.precess(coordinates: self, to: targetEquinox!)
                 return newcoord
             }
         } else if self.system.type == .equatorial && self.system.equinox != .J2000 {
@@ -476,10 +480,14 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         if coordinates.system.type != .equatorial && coordinates.system.type != .ICRS {
             throw CoreAstroError.incorrectCoordinateSystem
         }
-        if coordinates.system.equinox == nil {
+        var originEquinox = coordinates.system.equinox
+        if originEquinox == nil && coordinates.system.type != .ICRS {
             throw CoreAstroError.equinoxNotDefined
         }
-        let T = coordinates.system.equinox!.julianCenturiesSinceJ2000.scalarValue
+        if coordinates.system.type == .ICRS {
+            originEquinox = .J2000
+        }
+        let T = originEquinox!.julianCenturiesSinceJ2000.scalarValue
         let t = equinox.julianCenturiesSinceJ2000.scalarValue - T
         let ζ = (2306.2181 + 1.39656*T - 0.000139*T*T) * t + (0.30188 - 0.000344*T) * t*t + 0.017998 * t*t*t
         let z = (2306.2181 + 1.39656*T - 0.000139*T*T) * t + (1.09468 + 0.000066*T) * t*t + 0.018203 * t*t*t
