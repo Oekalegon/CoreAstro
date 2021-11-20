@@ -17,7 +17,9 @@ import Foundation
 public protocol CelestialObject {
     
     /// The primary name of the object.
-    var name: String {get}
+    ///
+    /// Objects are allowed to not have a name (e.g. for catalog objects that only have identifiers).
+    var name: String? {get}
     
     /// The set of names (with optional language identifier) of this object.
     var names: [StringLiteral] {get}
@@ -27,12 +29,6 @@ public protocol CelestialObject {
     ///   - language: The language identifier
     /// - Returns: The names
     func names(language: String?) -> [String]
-    
-    /// The primary identifier of the object.
-    var identifier: ObjectIdentifier {get}
-    
-    /// The set of identifiers of this object.
-    var identifiers: [ObjectIdentifier] {get}
     
     /// Calculates the ICRS equatorial coordinates for the object at the specified date.
     /// - Parameters:
@@ -92,4 +88,19 @@ public protocol CelestialObject {
     /// - Returns: The ecliptic coordinates of the object
     func horizontalCoordinates(on date: Date, from location: GeographicalLocation) -> Coordinates
     
+}
+
+/// This protocol defines the properties of celestial objects that are taken from an astronomical catalogue.
+///
+/// It includes access to indentifiers that identify the object within a specific catalog.
+///
+/// Most celestial objects will be taken from catalogs, such as stars, galaxies, or minor planets.
+/// Some Solar system objects such as the planets and the Sun will not be taken from catalogs.
+public protocol CatalogObject: CelestialObject {
+    
+    /// The primary identifier of the object.
+    var identifier: ObjectIdentifier {get}
+    
+    /// The set of identifiers of this object.
+    var identifiers: [ObjectIdentifier] {get}
 }
