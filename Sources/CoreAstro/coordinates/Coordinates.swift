@@ -261,21 +261,24 @@ public struct Coordinates: Equatable, CustomStringConvertible {
     /// The longitude components of the celestial coordinates.
     public var longitude: Longitude {
         get {
-            return self.sphericalCoordinates.longitude
+            return try! Longitude(measure: self.sphericalCoordinates.longitude.convert(to: .degree))
         }
     }
     
     /// The latitude components of the celestial coordinates.
     public var latitude: Latitude {
         get {
-            return self.sphericalCoordinates.latitude
+            return try! Latitude(measure: self.sphericalCoordinates.latitude.convert(to: .degree))
         }
     }
     
     /// The distance components of the celestial coordinates.
     public var distance: Distance? {
         get {
-            return self.sphericalCoordinates.distance
+            if self.distanceIsKnown {
+                return try! Distance(measure: self.sphericalCoordinates.distance!.convert(to: .astronomicalUnit))
+            }
+            return nil
         }
     }
     
@@ -283,7 +286,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
     /// celestial sphere.
     public var sphericalCoordinates: SphericalCoordinates {
         get {
-            var distance : Distance? = try! Distance(measure: try! _rectangularCoordinates.distance.convert(to: .metre))
+            var distance : Distance? = try! Distance(measure: try! _rectangularCoordinates.distance.convert(to: _rectangularCoordinates.z.unit))
             let latitude = asin(_rectangularCoordinates.z/distance!)
             var longitude = try! atan(_rectangularCoordinates.y, _rectangularCoordinates.x)
             if !self.system.antiClockwise {
@@ -358,6 +361,53 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         self.positionType = positionType
         self.distanceIsKnown = sphericalCoordinates.distance != nil ? true : false
     }
+    
+    private func convertOrigin(to system: CoordinateSystem, positionType: PositionType) throws -> Coordinates {
+        var epoch = system.epoch
+        if epoch == nil {
+            epoch = self.system.epoch
+        }
+        if epoch == nil {
+            epoch = Date()
+        }
+        var coordinates = self
+        switch self.system.origin {
+        case .geocentric:
+            // Nothing to do, we are converting to geocentric
+            break
+        case .barycentric:
+            let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
+            let rc = coordinates.rectangularCoordinates!
+            let newrc = try RectangularCoordinates(x: Distance(measure: rc.x - earthRC!.x), y: Distance(measure:rc.y - earthRC!.y), z: Distance(measure:rc.z - earthRC!.z))
+            let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .geocentric)
+            coordinates = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
+            break
+        case .heliocentric:
+            break
+        case .topocentric(let location):
+            // TODO topocentric coordinate conversion
+            break
+        }
+        switch system.origin {
+        case .geocentric:
+            // Nothing to do, we are converting from geocentric
+            break
+        case .barycentric:
+            let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
+            let rc = coordinates.rectangularCoordinates!
+            let newrc = try RectangularCoordinates(x: Distance(measure: rc.x + earthRC!.x), y: Distance(measure:rc.y + earthRC!.y), z: Distance(measure:rc.z + earthRC!.z))
+            let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .geocentric)
+            coordinates = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
+            break
+        case .heliocentric:
+            break
+        case .topocentric(let location):
+            // TODO topocentric coordinate conversion
+            break
+            
+        }
+        return coordinates
+    }
         
     public func convert(to target: CoordinateSystem, positionType: PositionType) throws -> Coordinates {
         // TODO: Take the type of position into account
@@ -365,6 +415,10 @@ public struct Coordinates: Equatable, CustomStringConvertible {
             return self
         }
         if (self.system.type == .equatorial && self.system.equinox == .J2000) || self.system.type == .ICRS {
+            if self.system.origin != target.origin {
+                let correctOrigin = try self.convertOrigin(to:target, positionType: positionType)
+                return try correctOrigin.convert(to: target, positionType: positionType)
+            }
             if target.type == .elliptical {
                 let ε = try meanObliquityOfTheEcliptic(on: target.epoch!)
                 let np = SphericalCoordinates(longitude: try Longitude(270.0, unit: .degree), latitude: try Latitude(90.0-ε.scalarValue, unit: .degree))
@@ -583,7 +637,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
     
     public var description: String {
         get {
-            return ""
+            return "\(self.longitude)  \(self.latitude) \(String(describing: self.distance))"
         }
     }
 }
