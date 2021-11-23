@@ -258,6 +258,27 @@ public struct Coordinates: Equatable, CustomStringConvertible {
     /// A flag to denote whether the distance is known.
     public var distanceIsKnown: Bool
     
+    /// The longitude components of the celestial coordinates.
+    public var longitude: Longitude {
+        get {
+            return self.sphericalCoordinates.longitude
+        }
+    }
+    
+    /// The latitude components of the celestial coordinates.
+    public var latitude: Latitude {
+        get {
+            return self.sphericalCoordinates.latitude
+        }
+    }
+    
+    /// The distance components of the celestial coordinates.
+    public var distance: Distance? {
+        get {
+            return self.sphericalCoordinates.distance
+        }
+    }
+    
     /// The spherical coordinates (longitude, latitude, and optionally distance) of the coordinates on the
     /// celestial sphere.
     public var sphericalCoordinates: SphericalCoordinates {
@@ -373,12 +394,15 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: ω, coordinates: self._rectangularCoordinates)
                 let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
                 return newcoord
-            } else if target.type == .equatorial {
+            } else if target.type == .equatorial || target.type == .ICRS {
                 // Only precession
-                if target.equinox == nil {
+                var equinox = target.equinox
+                if target.type == .ICRS {
+                    equinox = .J2000
+                } else if target.equinox == nil {
                     throw CoreAstroError.equinoxNotDefined
                 }
-                let newcoord = try Coordinates.precess(coordinates: self, to: target.equinox!)
+                let newcoord = try Coordinates.precess(coordinates: self, to: equinox!)
                 return newcoord
             }
         } else if (target.type == .equatorial && target.equinox == .J2000) || target.type == .ICRS {
@@ -411,7 +435,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: ω, coordinates: self._rectangularCoordinates)
                 let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
                 return newcoord
-            } else if self.system.type == .equatorial {
+            } else if self.system.type == .equatorial || self.system.type == .ICRS {
                 // Only precession
                 if self.system.equinox == nil {
                     throw CoreAstroError.equinoxNotDefined
