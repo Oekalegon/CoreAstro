@@ -7,7 +7,11 @@
 
 import Foundation
 
-public class Star: CatalogObject {
+public protocol Star : CelestialObject {
+    
+}
+
+public class CatalogStar: Star, CatalogObject {
     
     public var identifier: ObjectIdentifier {
         get {
