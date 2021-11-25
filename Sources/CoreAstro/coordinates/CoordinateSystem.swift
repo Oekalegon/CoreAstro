@@ -17,7 +17,7 @@ public enum CoordinateSystemOrigin : Equatable {
 public enum CoordinateSystemType : Equatable {
     case ICRS
     case equatorial
-    case elliptical
+    case ecliptical
     case horizontal
     case galactic
 }
@@ -49,7 +49,7 @@ public struct CoordinateSystem: Equatable {
     }
     
     public static func ecliptical(at epoch: Date, from origin: CoordinateSystemOrigin = .geocentric) -> CoordinateSystem {
-        return CoordinateSystem(type: .elliptical, epoch: epoch, origin: origin)
+        return CoordinateSystem(type: .ecliptical, epoch: epoch, origin: origin)
     }
     
     public static func horizontal(at epoch: Date, for location: GeographicalLocation) -> CoordinateSystem {

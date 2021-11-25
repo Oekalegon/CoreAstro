@@ -90,9 +90,11 @@ class VSOPFile {
         }
         let rectComponents = try! RectangularCoordinates(x: Distance(X, unit: .astronomicalUnit), y: Distance(Y, unit: .astronomicalUnit), z: Distance(Z, unit: .astronomicalUnit))
         print(">>>> \(rectComponents)")
-        let coord = Coordinates(rectangularCoordinates: rectComponents, system: .equatorial(for: .J2000, from: .barycentric), positionType: .meanPosition)
+        let coord = Coordinates(rectangularCoordinates: rectComponents, system: .ecliptical(at: .J2000, from: .barycentric), positionType: .meanPosition)
         print(">>>> \(coord)")
         print("Distance: \(try! coord.sphericalCoordinates.distance!.convert(to: .astronomicalUnit))")
+        
+        // TODO: Correction for light time
         return coord
     }
 }

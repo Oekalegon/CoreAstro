@@ -300,7 +300,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 return try! SphericalCoordinates(longitude: RightAscension(longitude.scalarValue, error: longitude.error, unit: longitude.unit), latitude: Declination(latitude.scalarValue, error: latitude.error, unit: latitude.unit), distance: distance)
             case .equatorial:
                 return try! SphericalCoordinates(longitude: RightAscension(longitude.scalarValue, error: longitude.error, unit: longitude.unit), latitude: Declination(latitude.scalarValue, error: latitude.error, unit: latitude.unit), distance: distance)
-            case .elliptical:
+            case .ecliptical:
                 return try! SphericalCoordinates(longitude: EclipticalLongitude(longitude.scalarValue, error: longitude.error, unit: longitude.unit), latitude: EclipticalLatitude(latitude.scalarValue, error: latitude.error, unit: latitude.unit), distance: distance)
             case .galactic:
                 return try! SphericalCoordinates(longitude: GalacticLongitude(longitude.scalarValue, error: longitude.error, unit: longitude.unit), latitude: GalacticLatitude(latitude.scalarValue, error: latitude.error, unit: latitude.unit), distance: distance)
@@ -419,7 +419,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 let correctOrigin = try self.convertOrigin(to:target, positionType: positionType)
                 return try correctOrigin.convert(to: target, positionType: positionType)
             }
-            if target.type == .elliptical {
+            if target.type == .ecliptical {
                 let ε = try meanObliquityOfTheEcliptic(on: target.epoch!)
                 let np = SphericalCoordinates(longitude: try Longitude(270.0, unit: .degree), latitude: try Latitude(90.0-ε.scalarValue, unit: .degree))
                 let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: try Longitude(0, unit: .degree), coordinates: self._rectangularCoordinates)
@@ -460,7 +460,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 return newcoord
             }
         } else if (target.type == .equatorial && target.equinox == .J2000) || target.type == .ICRS {
-            if self.system.type == .elliptical {
+            if self.system.type == .ecliptical {
                 let ε = try meanObliquityOfTheEcliptic(on: self.system.epoch!)
                 let np = SphericalCoordinates(longitude: try Longitude(270.0, unit: .degree), latitude: try Latitude(90.0-ε.scalarValue, unit: .degree))
                 let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: try Longitude(0, unit: .degree), coordinates: self._rectangularCoordinates)
@@ -637,7 +637,19 @@ public struct Coordinates: Equatable, CustomStringConvertible {
     
     public var description: String {
         get {
-            return "\(self.longitude)  \(self.latitude) \(String(describing: self.distance))"
+            let distanceStr = self.distance != nil ? "d = \(self.distance!)" : ""
+            switch self.system.type {
+            case .ICRS:
+                return "α = \(try! self.longitude.convert(to: .angleHourMinuteSecond))  δ = \(try! self.latitude.convert(to: .signDegreeArcminuteArcsecond)) \(distanceStr)"
+            case .equatorial:
+                return "α = \(try! self.longitude.convert(to: .angleHourMinuteSecond))  δ = \(try! self.latitude.convert(to: .signDegreeArcminuteArcsecond)) \(distanceStr)"
+            case .galactic:
+                return "l = \(try! self.longitude.convert(to: .degreeArcminuteArcsecond))  b = \(try! self.latitude.convert(to: .signDegreeArcminuteArcsecond)) \(distanceStr)"
+            case .ecliptical:
+                return "λ = \(try! self.longitude.convert(to: .degreeArcminuteArcsecond))  β = \(try! self.latitude.convert(to: .signDegreeArcminuteArcsecond)) \(distanceStr)"
+            case .horizontal:
+                return "A = \(try! self.longitude.convert(to: .degreeArcminuteArcsecond))  h = \(try! self.latitude.convert(to: .signDegreeArcminuteArcsecond)) \(distanceStr)"
+            }
         }
     }
 }
