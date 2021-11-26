@@ -196,7 +196,7 @@ class VSOPFile {
         }
         let rectComponents = try! RectangularCoordinates(x: Distance(X, unit: .astronomicalUnit), y: Distance(Y, unit: .astronomicalUnit), z: Distance(Z, unit: .astronomicalUnit))
         let coord = Coordinates(rectangularCoordinates: rectComponents, system: .equatorial(for: .J2000, from: .barycentric), positionType: .meanPosition)
-        print("Distance: \(try! coord.sphericalCoordinates.distance!.convert(to: .astronomicalUnit))")
+        //print("Distance: \(try! coord.sphericalCoordinates.distance!.convert(to: .astronomicalUnit))")
         return coord
     }
 }
@@ -265,6 +265,6 @@ struct VSOPRecord {
         self.A = Double(components[16].trimmingCharacters(in: .whitespaces))!
         self.B = Double(components[17].trimmingCharacters(in: .whitespaces))!
         self.C = Double(components[18].trimmingCharacters(in: .whitespaces))!
-        print("component: \(self.component) t^\(self.tPower) A=\(self.A) B=\(self.B) C=\(self.C)")
+        //print("component: \(self.component) t^\(self.tPower) A=\(self.A) B=\(self.B) C=\(self.C)")
     }
 }
