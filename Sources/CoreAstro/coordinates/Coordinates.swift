@@ -383,6 +383,12 @@ public struct Coordinates: Equatable, CustomStringConvertible {
             coordinates = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
             break
         case .heliocentric:
+            let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
+            let sunRC = SolarSystem.sun.equatorialCoordinates(on: epoch!).rectangularCoordinates
+            let rc = coordinates.rectangularCoordinates!
+            let newrc = try RectangularCoordinates(x: Distance(measure: rc.x + sunRC!.x - earthRC!.x), y: Distance(measure:rc.y + sunRC!.y - earthRC!.y), z: Distance(measure:rc.z + sunRC!.z - earthRC!.z))
+            let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .geocentric)
+            coordinates = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
             break
         case .topocentric(let location):
             // TODO topocentric coordinate conversion
@@ -396,10 +402,16 @@ public struct Coordinates: Equatable, CustomStringConvertible {
             let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
             let rc = coordinates.rectangularCoordinates!
             let newrc = try RectangularCoordinates(x: Distance(measure: rc.x + earthRC!.x), y: Distance(measure:rc.y + earthRC!.y), z: Distance(measure:rc.z + earthRC!.z))
-            let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .geocentric)
+            let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .barycentric)
             coordinates = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
             break
         case .heliocentric:
+            let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
+            let sunRC = SolarSystem.sun.equatorialCoordinates(on: epoch!).rectangularCoordinates
+            let rc = coordinates.rectangularCoordinates!
+            let newrc = try RectangularCoordinates(x: Distance(measure: rc.x - sunRC!.x + earthRC!.x), y: Distance(measure:rc.y - sunRC!.y + earthRC!.y), z: Distance(measure:rc.z - sunRC!.z + earthRC!.z))
+            let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .heliocentric)
+            coordinates = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
             break
         case .topocentric(let location):
             // TODO topocentric coordinate conversion

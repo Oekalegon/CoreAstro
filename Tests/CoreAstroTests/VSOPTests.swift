@@ -13,11 +13,23 @@ import CoreMeasure
 final class VSOPTests: XCTestCase {
     
     func testVSOPFile() throws {
-        let uranus = Planet.uranus
-        let coordinates = uranus.equatorialCoordinates(on: Date())
-        let targetcs = CoordinateSystem.equatorial(for: .J2000, from: .geocentric)
-        let converted = try coordinates.convert(to: targetcs, positionType: .meanPosition)
-        print("   \(coordinates)\n-> \(converted)")
+        let sun = SolarSystem.sun
+        let venus = Planet.venus
+        print("\n** SUN **")
+        try self.printPositions(object: sun)
+        print("\n** VENUS **")
+        try self.printPositions(object: venus)
+    }
+    
+    func printPositions(object: CelestialObject) throws {
+        let coordinates = object.equatorialCoordinates(on: Date())
+        let geocentriccs = CoordinateSystem.equatorial(for: .J2000, from: .geocentric)
+        let geocentric = try coordinates.convert(to: geocentriccs, positionType: .meanPosition)
+        let heliocentriccs = CoordinateSystem.equatorial(for: .J2000, from: .heliocentric)
+        let heliocentric = try coordinates.convert(to: heliocentriccs, positionType: .meanPosition)
+        print("   barycentric: \(coordinates)")
+        print("    geocentric: \(geocentric)")
+        print("  heliocentric: \(heliocentric)")
         //print("   \(coordinates.rectangularCoordinates)\n-> \(converted.rectangularCoordinates)")
     }
 }
