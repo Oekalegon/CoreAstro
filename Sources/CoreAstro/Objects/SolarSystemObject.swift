@@ -141,7 +141,6 @@ class VSOPFile {
     fileprivate init(name: String) {
         let ext = String(name.lowercased()[..<name.index(name.startIndex, offsetBy: 3)])
         let vsopURL = Bundle.module.url(forResource: "VSOP87E", withExtension: ext)
-        print("VSOP URL: \(vsopURL!)")
         self.load(from: vsopURL!)
     }
     
@@ -172,7 +171,6 @@ class VSOPFile {
             }
             terms[componentIndex][record.tPower] = terms[componentIndex][record.tPower] + record.A*cos(record.B+record.C*T)
         }
-        print("terms: \(terms)")
         var component = 0
         var X = 0.0
         var Y = 0.0
@@ -194,9 +192,13 @@ class VSOPFile {
             }
             component = component + 1
         }
-        let rectComponents = try! RectangularCoordinates(x: Distance(X, unit: .astronomicalUnit), y: Distance(Y, unit: .astronomicalUnit), z: Distance(Z, unit: .astronomicalUnit))
-        let coord = Coordinates(rectangularCoordinates: rectComponents, system: .equatorial(for: .J2000, from: .barycentric), positionType: .meanPosition)
-        //print("Distance: \(try! coord.sphericalCoordinates.distance!.convert(to: .astronomicalUnit))")
+        let rectComponents = try! RectangularCoordinates(x: Distance(X, unit: .astronomicalUnit), y: Distance(Y, unit: .astronomicalUnit), z: Distance(Z, unit: .astronomicalUnit))("Distance: \(try! coord.sphericalCoordinates.distance!.convert(to: .astronomicalUnit))")
+        print(">>>> \(rectComponents)")
+        let coord = Coordinates(rectangularCoordinates: rectComponents, system: .ecliptical(at: .J2000, from: .barycentric), positionType: .meanPosition)
+        print(">>>> \(coord)")
+        print("Distance: \(try! coord.sphericalCoordinates.distance!.convert(to: .astronomicalUnit))")
+        
+        // TODO: Correction for light time
         return coord
     }
 }
