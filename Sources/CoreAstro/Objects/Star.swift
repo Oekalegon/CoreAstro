@@ -71,9 +71,17 @@ public class CatalogStar: Star, CatalogObject {
         return try! icrs.convert(to: .galactic, positionType: .meanPosition)
     }
     
-    public func eclipticalCoordinates(on date: Date, from location: CoordinateSystemOrigin) -> Coordinates {
+    public func eclipticalCoordinates(on date: Date, eclipticAt ecliptic: Date? = nil, for equinox: Date? = nil, from location: CoordinateSystemOrigin) -> Coordinates {
         let icrs = self.equatorialCoordinates(on: date)
-        return try! icrs.convert(to: .ecliptical(at: date, from: location), positionType: .meanPosition)
+        var equinoxDate = date
+        if equinox != nil {
+            equinoxDate = equinox!
+        }
+        var eclipticDate = date
+        if ecliptic != nil {
+            eclipticDate = ecliptic!
+        }
+        return try! icrs.convert(to: .ecliptical(eclipticAt: eclipticDate, for: equinoxDate, from: location), positionType: .meanPosition)
     }
     
     public func horizontalCoordinates(on date: Date, from location: GeographicalLocation) -> Coordinates {

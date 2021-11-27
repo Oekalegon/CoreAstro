@@ -24,6 +24,7 @@ public protocol SolarSystemObject : CelestialObject {
 /// Object that adhere to this protocol represent objects in the Solar System
 public class VSOPObject : SolarSystemObject {
     
+    
     let vsop : VSOPFile
     
     init(name: String) {
@@ -99,8 +100,16 @@ public class VSOPObject : SolarSystemObject {
         return try! vsop.coordinates(on: date).convert(to: .galactic, positionType: .meanPosition)
     }
     
-    public func eclipticalCoordinates(on date: Date, from location: CoordinateSystemOrigin) -> Coordinates {
-        return try! vsop.coordinates(on: date).convert(to: .ecliptical(at: date, from: location), positionType: .meanPosition)
+    public func eclipticalCoordinates(on date: Date, eclipticAt ecliptic: Date? = nil, for equinox: Date? = nil, from location: CoordinateSystemOrigin) -> Coordinates {
+        var equinoxDate = date
+        if equinox != nil {
+            equinoxDate = equinox!
+        }
+        var eclipticDate = date
+        if ecliptic != nil {
+            eclipticDate = ecliptic!
+        }
+        return try! vsop.coordinates(on: date).convert(to: .ecliptical(eclipticAt: eclipticDate, for: equinoxDate, from: location), positionType: .meanPosition)
     }
     
     public func horizontalCoordinates(on date: Date, from location: GeographicalLocation) -> Coordinates {
@@ -159,7 +168,11 @@ class VSOPFile {
     }
     
     func coordinates(on date: Date) -> Coordinates {
-        let T = date.julianCenturiesSinceJ2000.scalarValue/10.0 // Julian Millenia
+        // TODO: Calculation of Terestial Time
+        let JD = date.julianDay.scalarValue
+        let dTapprox = (67.6439 / 115.0) * (100 + (JD - 2451545)/365.25)
+        let JDE = JD + dTapprox / 86400.0 // TO CONVERT TO Terestial Time
+        let T = (JDE - 2451545) / 365250 // Julian Millenia
         var terms = [[Double]]()
         for record in records {
             let componentIndex = record.component.rawValue-1
@@ -192,11 +205,8 @@ class VSOPFile {
             }
             component = component + 1
         }
-        let rectComponents = try! RectangularCoordinates(x: Distance(X, unit: .astronomicalUnit), y: Distance(Y, unit: .astronomicalUnit), z: Distance(Z, unit: .astronomicalUnit))("Distance: \(try! coord.sphericalCoordinates.distance!.convert(to: .astronomicalUnit))")
-        print(">>>> \(rectComponents)")
-        let coord = Coordinates(rectangularCoordinates: rectComponents, system: .ecliptical(at: .J2000, from: .barycentric), positionType: .meanPosition)
-        print(">>>> \(coord)")
-        print("Distance: \(try! coord.sphericalCoordinates.distance!.convert(to: .astronomicalUnit))")
+        let rectComponents = try! RectangularCoordinates(x: Distance(X, unit: .astronomicalUnit), y: Distance(Y, unit: .astronomicalUnit), z: Distance(Z, unit: .astronomicalUnit))
+        let coord = Coordinates(rectangularCoordinates: rectComponents, system: .ecliptical(eclipticAt: .J2000, for: .J2000, from: .barycentric), positionType: .meanPosition)
         
         // TODO: Correction for light time
         return coord

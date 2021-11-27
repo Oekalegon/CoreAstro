@@ -74,9 +74,11 @@ public protocol CelestialObject {
     /// defined by a geographic location.
     /// - Parameters:
     ///   - date: The date for which the coordinates are requested
+    ///   - ecliptic: The date of the ecliptic to which the coordinates will be calculated
+    ///   - equinox: The equinox of the coordinate system in which the coordinates will be defined
     ///   - location: The location of the observer for who the coordinates are valid
-    /// - Returns: The ecliptic coordinates of the object
-    func eclipticalCoordinates(on date: Date, from location: CoordinateSystemOrigin) -> Coordinates
+    /// - Returns: The ecliptical coordinates of the object
+    func eclipticalCoordinates(on date: Date, eclipticAt ecliptic: Date?, for equinox: Date?, from location: CoordinateSystemOrigin) -> Coordinates
     
     /// Calculates the horizontal coordinates for the object at the specifed date for an observer at the
     /// specified location.
@@ -85,7 +87,7 @@ public protocol CelestialObject {
     /// - Parameters:
     ///   - date: The date for which the coordinates are requested
     ///   - location: The geographic location  of the observer for who the coordinates are valid
-    /// - Returns: The ecliptic coordinates of the object
+    /// - Returns: The horizontal coordinates of the object
     func horizontalCoordinates(on date: Date, from location: GeographicalLocation) -> Coordinates
     
 }

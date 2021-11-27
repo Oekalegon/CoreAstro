@@ -332,11 +332,11 @@ public struct Coordinates: Equatable, CustomStringConvertible {
     ///   - rectangularCoordinates: The rectangular coordinates.
     ///   - system: The coordinate system in which these coordinates are defined.
     ///   - positionType: The type of position, either the *mean*, *true*, or *apparent* position.
-    public init(rectangularCoordinates: RectangularCoordinates, system: CoordinateSystem, positionType: PositionType) {
+    public init(rectangularCoordinates: RectangularCoordinates, system: CoordinateSystem, positionType: PositionType, distanceIsKnown: Bool=true) {
         self._rectangularCoordinates = rectangularCoordinates
         self.system = system
         self.positionType = positionType
-        self.distanceIsKnown = true
+        self.distanceIsKnown = distanceIsKnown
     }
     
     /// Creates a new set of coordinates specified by the given spherical coordinates on the celestial
@@ -362,37 +362,41 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         self.distanceIsKnown = sphericalCoordinates.distance != nil ? true : false
     }
     
-    private func convertOrigin(to system: CoordinateSystem, positionType: PositionType) throws -> Coordinates {
+    private static func convertOrigin(_ coordinates: Coordinates, to system: CoordinateSystem, positionType: PositionType) throws -> Coordinates {
+        if coordinates.system.origin == system.origin || !coordinates.distanceIsKnown {
+            return coordinates
+        }
         var epoch = system.epoch
         if epoch == nil {
-            epoch = self.system.epoch
+            epoch = coordinates.system.epoch
         }
         if epoch == nil {
             epoch = Date()
         }
-        var coordinates = self
-        switch self.system.origin {
+        var ncoord = coordinates
+        switch coordinates.system.origin {
         case .geocentric:
             // Nothing to do, we are converting to geocentric
             break
         case .barycentric:
             let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
-            let rc = coordinates.rectangularCoordinates!
+            // print(ncoord)
+            let rc = ncoord._rectangularCoordinates
             let newrc = try RectangularCoordinates(x: Distance(measure: rc.x - earthRC!.x), y: Distance(measure:rc.y - earthRC!.y), z: Distance(measure:rc.z - earthRC!.z))
             let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .geocentric)
-            coordinates = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
+            ncoord = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
             break
         case .heliocentric:
             let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
             let sunRC = SolarSystem.sun.equatorialCoordinates(on: epoch!).rectangularCoordinates
-            let rc = coordinates.rectangularCoordinates!
+            let rc = ncoord._rectangularCoordinates
             let newrc = try RectangularCoordinates(x: Distance(measure: rc.x + sunRC!.x - earthRC!.x), y: Distance(measure:rc.y + sunRC!.y - earthRC!.y), z: Distance(measure:rc.z + sunRC!.z - earthRC!.z))
             let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .geocentric)
-            coordinates = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
+            ncoord = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
             break
         case .topocentric(let location):
             // TODO topocentric coordinate conversion
-            break
+            throw CoreAstroError.notImplemented
         }
         switch system.origin {
         case .geocentric:
@@ -400,131 +404,198 @@ public struct Coordinates: Equatable, CustomStringConvertible {
             break
         case .barycentric:
             let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
-            let rc = coordinates.rectangularCoordinates!
+            let rc = ncoord._rectangularCoordinates
             let newrc = try RectangularCoordinates(x: Distance(measure: rc.x + earthRC!.x), y: Distance(measure:rc.y + earthRC!.y), z: Distance(measure:rc.z + earthRC!.z))
             let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .barycentric)
-            coordinates = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
+            ncoord = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
             break
         case .heliocentric:
             let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
             let sunRC = SolarSystem.sun.equatorialCoordinates(on: epoch!).rectangularCoordinates
-            let rc = coordinates.rectangularCoordinates!
+            let rc = ncoord._rectangularCoordinates
             let newrc = try RectangularCoordinates(x: Distance(measure: rc.x - sunRC!.x + earthRC!.x), y: Distance(measure:rc.y - sunRC!.y + earthRC!.y), z: Distance(measure:rc.z - sunRC!.z + earthRC!.z))
             let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .heliocentric)
-            coordinates = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
+            ncoord = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
             break
         case .topocentric(let location):
             // TODO topocentric coordinate conversion
-            break
-            
+            throw CoreAstroError.notImplemented
         }
-        return coordinates
+        return ncoord
     }
-        
+    
+    private static func convertICRSToEquatorial2000(coordinates: Coordinates) throws -> Coordinates {
+        if coordinates.system.type != .ICRS {
+            throw CoreAstroError.incorrectCoordinateSystem
+        }
+        let ncoord = Coordinates(rectangularCoordinates: coordinates._rectangularCoordinates, system: .equatorialJ2000, positionType: coordinates.positionType, distanceIsKnown: coordinates.distanceIsKnown)
+        return ncoord
+    }
+    
+    private static func convertEquatorial2000ToICRS(coordinates: Coordinates) throws -> Coordinates {
+        if coordinates.system.type != .equatorial || coordinates.system.equinox != .J2000 {
+            throw CoreAstroError.incorrectCoordinateSystem
+        }
+        let ncoord = Coordinates(rectangularCoordinates: coordinates._rectangularCoordinates, system: .ICRS, positionType: coordinates.positionType, distanceIsKnown: coordinates.distanceIsKnown)
+        return ncoord
+    }
+    
+    private static func convertEquatorialToEquatorial2000(coordinates: Coordinates) throws -> Coordinates {
+        if coordinates.system.type != .equatorial {
+            throw CoreAstroError.incorrectCoordinateSystem
+        }
+        // Coordinates Equatorial Equinox=equinox Origin=origin
+        var ncoord = try Coordinates.precess(coordinates: coordinates, to: .J2000)
+        // Coordinates Equatorial Equinox=J2000 Origin=origin
+        ncoord = try Coordinates.convertOrigin(ncoord, to: .equatorialJ2000, positionType: coordinates.positionType)
+        // Coordinates Equatorial Equinox=J2000 Origin=barycentric
+        return ncoord
+    }
+    
+    private static func convertEquatorial2000ToEquatorial(coordinates: Coordinates, equinox: Date, origin: CoordinateSystemOrigin) throws -> Coordinates {
+        if coordinates.system.type != .equatorial || coordinates.system.equinox != .J2000 {
+            throw CoreAstroError.incorrectCoordinateSystem
+        }
+        // Coordinates Equatorial Equinox=J2000 Origin=barycentric
+        var ncoord = try Coordinates.convertOrigin(coordinates, to: .equatorial(for: .J2000, from: origin), positionType: coordinates.positionType)
+        // Coordinates Equatorial Equinox=J2000 Origin=origin
+        ncoord = try Coordinates.precess(coordinates: ncoord, to: equinox)
+        // Coordinates Equatorial Equinox=equinox Origin=origin
+        return ncoord
+    }
+    
+    private static func convertEclipticalToEquatorial2000(coordinates: Coordinates) throws -> Coordinates {
+        if coordinates.system.type != .ecliptical {
+            throw CoreAstroError.incorrectCoordinateSystem
+        }
+        let ε = try meanObliquityOfTheEcliptic(on: coordinates.system.ecliptic!)
+        let np = SphericalCoordinates(longitude: try Longitude(270.0, unit: .degree), latitude: try Latitude(90.0-ε.scalarValue, unit: .degree))
+        // Coordinates Ecliptical Equinox=equinox Ecliptic = ecliptic
+        let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: try Longitude(0, unit: .degree), coordinates: coordinates._rectangularCoordinates)
+        var ncoord = Coordinates(rectangularCoordinates: rc, system: .equatorial(for: coordinates.system.equinox!, from: coordinates.system.origin), positionType: coordinates.positionType, distanceIsKnown: coordinates.distanceIsKnown)
+        // Coordinates Equatorial Equinox=equinox
+        ncoord = try Coordinates.convertEquatorialToEquatorial2000(coordinates: ncoord)
+        // Coordinates Equatorial Equinox=J2000
+        return ncoord
+    }
+    
+    private static func convertEquatorial2000ToEcliptical(coordinates: Coordinates, ecliptic: Date, equinox: Date, origin: CoordinateSystemOrigin) throws -> Coordinates {
+        if coordinates.system.type != .equatorial || coordinates.system.equinox != .J2000 {
+            throw CoreAstroError.incorrectCoordinateSystem
+        }
+        let ε = try meanObliquityOfTheEcliptic(on: ecliptic)
+        let np = SphericalCoordinates(longitude: try Longitude(270.0, unit: .degree), latitude: try Latitude(90.0-ε.scalarValue, unit: .degree))
+        // Coordinates Equatorial Equinox=J2000
+        var ncoord = try Coordinates.convertEquatorial2000ToEquatorial(coordinates: coordinates, equinox: equinox, origin: origin)
+        //print(" change origin from \(coordinates.system.origin) -> \(origin):  \(coordinates) -> \(ncoord)")
+        // Coordinates Equatorial Equinox=equinox
+        let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: try Longitude(0, unit: .degree), coordinates: ncoord._rectangularCoordinates)
+        ncoord = Coordinates(rectangularCoordinates: rc, system: .ecliptical(eclipticAt: ecliptic, for: equinox, from: ncoord.system.origin), positionType: ncoord.positionType, distanceIsKnown: coordinates.distanceIsKnown)
+        // Coordinates Ecliptical Equinox=equinox Ecliptic = ecliptic
+        return ncoord
+    }
+    
+    private static func convertGalacticToEquatorial2000(coordinates: Coordinates) throws -> Coordinates {
+        if coordinates.system.type != .galactic {
+            throw CoreAstroError.incorrectCoordinateSystem
+        }
+        let np = SphericalCoordinates(longitude: try Longitude(192.85948402, unit: .degree), latitude: try Latitude(27.12829637, unit: .degree))
+        // Coordinates Galactic
+        let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: try Longitude(249.9276045998651, unit: .degree), coordinates: coordinates._rectangularCoordinates)
+        var ncoord = Coordinates(rectangularCoordinates: rc, system: .equatorial(for: .J2000, from: coordinates.system.origin), positionType: coordinates.positionType, distanceIsKnown: coordinates.distanceIsKnown)
+        ncoord = try Coordinates.convertEquatorialToEquatorial2000(coordinates: ncoord)
+        // Coordinates Equatorial Equinox=J2000
+        return ncoord
+    }
+    
+    private static func convertEquatorial2000ToGalactic(coordinates: Coordinates, origin: CoordinateSystemOrigin) throws -> Coordinates {
+        if coordinates.system.type != .equatorial || coordinates.system.equinox != .J2000 {
+            throw CoreAstroError.incorrectCoordinateSystem
+        }
+        let np = SphericalCoordinates(longitude: try Longitude(192.85948402, unit: .degree), latitude: try Latitude(27.12829637, unit: .degree))
+        // Coordinates Equatorial Equinox=J2000 origin: barycentric
+        var ncoord = try Coordinates.convertEquatorial2000ToEquatorial(coordinates: coordinates, equinox: .J2000, origin: origin)
+        // Coordinates Equatorial Equinox=J2000 origin: origin
+        let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: try Longitude(249.9276045998651, unit: .degree), coordinates: coordinates._rectangularCoordinates)
+        ncoord = Coordinates(rectangularCoordinates: rc, system: .galactic, positionType: coordinates.positionType, distanceIsKnown: coordinates.distanceIsKnown)
+        // Coordinates Galactic
+        return ncoord
+    }
+    
+    private static func convertHorizontalToEquatorial2000(coordinates: Coordinates) throws -> Coordinates {
+        if coordinates.system.type != .horizontal {
+            throw CoreAstroError.incorrectCoordinateSystem
+        }
+        let geographicalLocation = coordinates.system.origin.geographicalLocation!
+        let ϕ = try! Latitude(measure: geographicalLocation.latitude.convert(to: OMUnit.degree))
+        let θ = try SiderealTime(on: coordinates.system.epoch!, at: geographicalLocation, positionType: coordinates.positionType)
+        let ω = try Longitude(θ.convert(to: OMUnit.degree).scalarValue + 180, unit: .degree)
+        let np = SphericalCoordinates(longitude: Longitude(angle: θ), latitude: ϕ)
+        // Coordinates Horizontal
+        let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: ω, coordinates: coordinates._rectangularCoordinates)
+        var ncoord = Coordinates(rectangularCoordinates: rc, system: .equatorial(for: coordinates.system.epoch!, from: coordinates.system.origin), positionType: coordinates.positionType, distanceIsKnown: coordinates.distanceIsKnown)
+        // Coordinates Equatorial Equinox=epoch
+        ncoord = try Coordinates.convertEquatorialToEquatorial2000(coordinates: ncoord)
+        // Coordinates Equatorial Equinox=J2000
+        return ncoord
+    }
+    
+    private static func convertEquatorial2000ToHorizontal(coordinates: Coordinates, epoch: Date, geographicalLocation: GeographicalLocation) throws -> Coordinates {
+        if coordinates.system.type != .equatorial || coordinates.system.equinox != .J2000 {
+            throw CoreAstroError.incorrectCoordinateSystem
+        }
+        let ϕ = try! Latitude(measure: geographicalLocation.latitude.convert(to: .degree))
+        let θ = try SiderealTime(on: epoch, at: geographicalLocation, positionType: coordinates.positionType)
+        let ω = try Longitude(θ.convert(to: OMUnit.degree).scalarValue + 180, unit: .degree)
+        let np = SphericalCoordinates(longitude: Longitude(angle: θ), latitude: ϕ)
+        // Coordinates Equatorial Equinox=J2000
+        var ncoord = try Coordinates.convertEquatorial2000ToEquatorial(coordinates: coordinates, equinox: epoch, origin: .topocentric(location: geographicalLocation))
+        // Coordinates Equatorial Equinox=epoch
+        let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: ω, coordinates: ncoord._rectangularCoordinates)
+        ncoord = Coordinates(rectangularCoordinates: rc, system: .horizontal(at: epoch, for: geographicalLocation), positionType: ncoord.positionType, distanceIsKnown: ncoord.distanceIsKnown)
+        // Coordinates Horizontal
+        return ncoord
+    }
+    
+    private static func convertToEquatorial2000(coordinates: Coordinates) throws -> Coordinates {
+        switch coordinates.system.type {
+        case .ICRS:
+            return try Coordinates.convertICRSToEquatorial2000(coordinates: coordinates)
+        case .equatorial:
+            return try Coordinates.convertEquatorialToEquatorial2000(coordinates: coordinates)
+        case .ecliptical:
+            return try Coordinates.convertEclipticalToEquatorial2000(coordinates: coordinates)
+        case .galactic:
+            return try Coordinates.convertGalacticToEquatorial2000(coordinates: coordinates)
+        case .horizontal:
+            return try Coordinates.convertHorizontalToEquatorial2000(coordinates: coordinates)
+        }
+    }
+    
+    private static func convertFromEquatorial2000(coordinates: Coordinates, target: CoordinateSystem) throws -> Coordinates {
+        switch target.type {
+        case .ICRS:
+            return try Coordinates.convertEquatorial2000ToICRS(coordinates: coordinates)
+        case .equatorial:
+            return try Coordinates.convertEquatorial2000ToEquatorial(coordinates: coordinates, equinox: target.equinox!, origin: target.origin)
+        case .ecliptical:
+            return try Coordinates.convertEquatorial2000ToEcliptical(coordinates: coordinates, ecliptic: target.ecliptic!, equinox: target.equinox!, origin: target.origin)
+        case .galactic:
+            return try Coordinates.convertEquatorial2000ToGalactic(coordinates: coordinates, origin: target.origin)
+        case .horizontal:
+            return try Coordinates.convertEquatorial2000ToHorizontal(coordinates: coordinates, epoch: target.epoch!, geographicalLocation: target.origin.geographicalLocation!)
+        }
+    }
+    
     public func convert(to target: CoordinateSystem, positionType: PositionType) throws -> Coordinates {
+        // print("\nConverting \(self.system) -> \(target)")
         // TODO: Take the type of position into account
         if self.system == target && self.positionType == positionType {
             return self
         }
-        if (self.system.type == .equatorial && self.system.equinox == .J2000) || self.system.type == .ICRS {
-            if self.system.origin != target.origin {
-                let correctOrigin = try self.convertOrigin(to:target, positionType: positionType)
-                return try correctOrigin.convert(to: target, positionType: positionType)
-            }
-            if target.type == .ecliptical {
-                let ε = try meanObliquityOfTheEcliptic(on: target.epoch!)
-                let np = SphericalCoordinates(longitude: try Longitude(270.0, unit: .degree), latitude: try Latitude(90.0-ε.scalarValue, unit: .degree))
-                let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: try Longitude(0, unit: .degree), coordinates: self._rectangularCoordinates)
-                let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
-                return newcoord
-            } else if target.type == .galactic {
-                let np = SphericalCoordinates(longitude: try Longitude(192.85948402, unit: .degree), latitude: try Latitude(27.12829637, unit: .degree))
-                let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: try Longitude(249.9276045998651, unit: .degree), coordinates: self._rectangularCoordinates)
-                let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
-                return newcoord
-            } else if target.type == .horizontal {
-                if target.epoch == nil {
-                    throw CoreAstroError.epochNotDefined
-                }
-                var geographicalLocation: GeographicalLocation? = nil
-                switch target.origin {
-                case .topocentric(let location):
-                    geographicalLocation = location
-                default:
-                    throw CoreAstroError.geographicLocationNotDefined
-                }
-                let ϕ = try! Latitude(measure: geographicalLocation!.latitude.convert(to: .degree))
-                let θ = try SiderealTime(on: target.epoch!, at: geographicalLocation!, positionType: positionType)
-                let ω = try Longitude(θ.convert(to: .degree).scalarValue + 180, unit: .degree)
-                let np = SphericalCoordinates(longitude: Longitude(angle: θ), latitude: ϕ)
-                let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: ω, coordinates: self._rectangularCoordinates)
-                let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
-                return newcoord
-            } else if target.type == .equatorial || target.type == .ICRS {
-                // Only precession
-                var equinox = target.equinox
-                if target.type == .ICRS {
-                    equinox = .J2000
-                } else if target.equinox == nil {
-                    throw CoreAstroError.equinoxNotDefined
-                }
-                let newcoord = try Coordinates.precess(coordinates: self, to: equinox!)
-                return newcoord
-            }
-        } else if (target.type == .equatorial && target.equinox == .J2000) || target.type == .ICRS {
-            if self.system.type == .ecliptical {
-                let ε = try meanObliquityOfTheEcliptic(on: self.system.epoch!)
-                let np = SphericalCoordinates(longitude: try Longitude(270.0, unit: .degree), latitude: try Latitude(90.0-ε.scalarValue, unit: .degree))
-                let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: try Longitude(0, unit: .degree), coordinates: self._rectangularCoordinates)
-                let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
-                return newcoord
-            } else if self.system.type == .galactic {
-                let np = SphericalCoordinates(longitude: try Longitude(192.85948402, unit: .degree), latitude: try Latitude(27.12829637, unit: .degree))
-                let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: try Longitude(249.9276045998651, unit: .degree), coordinates: self._rectangularCoordinates)
-                let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
-                return newcoord
-            } else if self.system.type == .horizontal {
-                if self.system.epoch == nil {
-                    throw CoreAstroError.epochNotDefined
-                }
-                var geographicalLocation: GeographicalLocation? = nil
-                switch self.system.origin {
-                case .topocentric(let location):
-                    geographicalLocation = location
-                default:
-                    throw CoreAstroError.geographicLocationNotDefined
-                }
-                let ϕ = try! Latitude(measure: geographicalLocation!.latitude.convert(to: .degree))
-                let θ = try SiderealTime(on: self.system.epoch!, at: geographicalLocation!, positionType: positionType)
-                let ω = try Longitude(θ.convert(to: .degree).scalarValue + 180, unit: .degree)
-                let np = SphericalCoordinates(longitude: Longitude(angle: θ), latitude: ϕ)
-                let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: ω, coordinates: self._rectangularCoordinates)
-                let newcoord = Coordinates(rectangularCoordinates: rc, system: target, positionType: positionType)
-                return newcoord
-            } else if self.system.type == .equatorial || self.system.type == .ICRS {
-                // Only precession
-                if self.system.equinox == nil {
-                    throw CoreAstroError.equinoxNotDefined
-                }
-                var targetEquinox = target.equinox
-                if target.type == .ICRS {
-                    targetEquinox = .J2000
-                }
-                let newcoord = try Coordinates.precess(coordinates: self, to: targetEquinox!)
-                return newcoord
-            }
-        } else if self.system.type == .equatorial && self.system.equinox != .J2000 {
-            let eq2000 = try Coordinates.precess(coordinates: self, to: .J2000)
-            return try eq2000.convert(to: target, positionType: positionType)
-        } else if target.type == .equatorial && target.equinox != .J2000 {
-            let newtarget = CoordinateSystem.equatorial(for: .J2000, from: target.origin)
-            let eq2000 = try self.convert(to: newtarget, positionType: positionType)
-            return try eq2000.convert(to: target, positionType: positionType)
-        } else {
-            let intermediate = try self.convert(to: .equatorialJ2000, positionType: positionType)
-            return try intermediate.convert(to: target, positionType: positionType)
-        }
-        throw CoreAstroError.notImplemented
+        var ncoord = try Coordinates.convertToEquatorial2000(coordinates: self)
+        ncoord = try Coordinates.convertFromEquatorial2000(coordinates: ncoord, target: target)
+        return ncoord
     }
     
     private static func convertFromEquatorial(systemNorthPole np: SphericalCoordinates, ascendingNode ω: Longitude, coordinates: RectangularCoordinates) -> RectangularCoordinates {
