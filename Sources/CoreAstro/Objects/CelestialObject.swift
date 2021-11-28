@@ -90,6 +90,17 @@ public protocol CelestialObject {
     /// - Returns: The horizontal coordinates of the object
     func horizontalCoordinates(on date: Date, from location: GeographicalLocation) -> Coordinates
     
+    /// The elongation of the celestial object, which is the angular distance to the Sun.
+    /// - Parameters:
+    ///   - date: the date for which the elongation should be calculated
+    ///   - origin: The origin of the coordinate system, i.e. the position of the observer
+    /// - Returns: The elongation of the object.
+    func elongation(on date: Date, from origin: CoordinateSystemOrigin) -> Angle {
+        let sun = SolarSystem.sun.eclipticalCoordinates(on: date, from: origin)
+        let coord = self.eclipticalCoordinates(on: date, from: origin)
+        let separation = Coordinates.angularSeparation(between: coord, and: sun)
+        return separation
+    }
 }
 
 /// This protocol defines the properties of celestial objects that are taken from an astronomical catalogue.
