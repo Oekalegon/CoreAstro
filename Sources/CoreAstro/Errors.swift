@@ -28,4 +28,7 @@ public enum CoreAstroError: Error {
     
     /// Thrown when the coordinates are not in the expected coordinate system.
     case incorrectCoordinateSystem
+    
+    /// Could not determine constellation for coordinates
+    case couldNotDetermineConstellation
 }

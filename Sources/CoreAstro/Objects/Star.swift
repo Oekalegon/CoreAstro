@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreMeasure
 
 public protocol Star : CelestialObject {
     
@@ -88,5 +89,11 @@ public class CatalogStar: Star, CatalogObject {
         let icrs = self.equatorialCoordinates(on: date)
         return try! icrs.convert(to: .horizontal(at: date, for: location), positionType: .apparentPosition)
     }
-
+    
+    public func elongation(on date: Date, from origin: CoordinateSystemOrigin) -> Angle {
+        let sun = SolarSystem.sun.eclipticalCoordinates(on: date, from: origin)
+        let coord = self.eclipticalCoordinates(on: date, from: origin)
+        let separation = try! Coordinates.angularSeparation(between: coord, and: sun)
+        return separation
+    }
 }

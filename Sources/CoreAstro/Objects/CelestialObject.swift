@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreMeasure
 
 /// This protocol defines the features of a generic celestial object.
 ///
@@ -95,12 +96,7 @@ public protocol CelestialObject {
     ///   - date: the date for which the elongation should be calculated
     ///   - origin: The origin of the coordinate system, i.e. the position of the observer
     /// - Returns: The elongation of the object.
-    func elongation(on date: Date, from origin: CoordinateSystemOrigin) -> Angle {
-        let sun = SolarSystem.sun.eclipticalCoordinates(on: date, from: origin)
-        let coord = self.eclipticalCoordinates(on: date, from: origin)
-        let separation = Coordinates.angularSeparation(between: coord, and: sun)
-        return separation
-    }
+    func elongation(on date: Date, from origin: CoordinateSystemOrigin) -> Angle
 }
 
 /// This protocol defines the properties of celestial objects that are taken from an astronomical catalogue.

@@ -14,7 +14,7 @@
               "ancient": true,
               "source": "Ptolemy"
             },
-            "meaning": "Andromeda"
+            "meaning": ["Andromeda"]
         },
         {
             "name": "Antlia",
@@ -28,7 +28,7 @@
               "year": 1763,
               "source": "Lacaille"
             },
-            "meaning": "air pump"
+            "meaning": ["air pump"]
         },
         {
             "name": "Apus",
@@ -59,7 +59,7 @@
               "ancient": true,
               "source": "Ptolemy"
             },
-            "meaning": "water-bearer"
+            "meaning": ["water-bearer"]
         },
         {
             "name": "Aquila",
@@ -72,7 +72,7 @@
               "ancient": true,
               "source": "Ptolemy"
             },
-            "meaning": "eagle"
+            "meaning": ["eagle"]
         },
         {
             "name": "Ara",
@@ -85,7 +85,7 @@
               "ancient": true,
               "source": "Ptolemy"
             },
-            "meaning": "altar"
+            "meaning": ["altar"]
         },
         {
             "name": "Aries",
@@ -98,7 +98,7 @@
               "ancient": true,
               "source": "Ptolemy"
             },
-            "meaning": "ram"
+            "meaning": ["ram"]
         },
         {
             "name": "Auriga",
@@ -111,7 +111,7 @@
               "ancient": true,
               "source": "Ptolemy"
             },
-            "meaning": "charioteer"
+            "meaning": ["charioteer"]
         },
         {
             "name": "Boötes",
@@ -124,7 +124,7 @@
               "ancient": true,
               "source": "Ptolemy"
             },
-            "meaning": "herdsman"
+            "meaning": ["herdsman"]
         },
         {
             "name": "Caelum",
@@ -155,7 +155,7 @@
               "year": 1613,
               "source": "Plancius"
             },
-            "meaning": "giraffe"
+            "meaning": ["giraffe"]
         },
         {
             "name": "Cancer",
@@ -168,7 +168,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "crab"
+            "meaning": ["crab"]
         },
         {
             "name": "Canes Venatici",
@@ -182,7 +182,7 @@
               "year": 1690,
               "source": "Firmamentum Sobiescianum, Hevelius"
             },
-            "meaning": "hunting dogs"
+            "meaning": ["hunting dogs"]
         },
         {
             "name": "Canis Major",
@@ -195,7 +195,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "greater dog"
+            "meaning": ["greater dog"]
         },
         {
             "name": "Canis Minor",
@@ -208,7 +208,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "lesser dog"
+            "meaning": ["lesser dog"]
         },
         {
             "name": "Capricornus",
@@ -221,7 +221,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "lsea goat"
+            "meaning": ["sea goat"]
         },
         {
             "name": "Carina",
@@ -236,10 +236,10 @@
               "source": "Lacaille",
               "precursor": {
                   "name": "Argo Navis",
-                  "part-of": true
+                  "partOf": true
               }
             },
-            "meaning": "keel"
+            "meaning": ["keel"]
         },
         {
             "name": "Cassiopeia",
@@ -252,7 +252,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "Cassiopeia"
+            "meaning": ["Cassiopeia"]
         },
         {
             "name": "Centaurus",
@@ -265,7 +265,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "centaur"
+            "meaning": ["centaur"]
         },
         {
             "name": "Cepheus",
@@ -278,7 +278,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "Cepheus"
+            "meaning": ["Cepheus"]
         },
         {
             "name": "Cetus",
@@ -308,7 +308,7 @@
               "year": 1603,
               "source": "Uranometria, created by Keyser and de Houtman"
             },
-            "meaning": "chameleon"
+            "meaning": ["chameleon"]
         },
         {
             "name": "Circinus",
@@ -322,7 +322,7 @@
               "year": 1763,
               "source": "Lacaille"
             },
-            "meaning": "compasses"
+            "meaning": ["compasses"]
         },
         {
             "name": "Columba",
@@ -337,10 +337,10 @@
               "source": "Plancius",
               "precursor": {
                   "name": "Canis Major",
-                  "part-of": true
+                  "partOf": true
               }
             },
-            "meaning": "dove"
+            "meaning": ["dove"]
         },
         {
             "name": "Coma Berenices",
@@ -355,10 +355,10 @@
               "source": "Caspar Vopel",
               "precursor": {
                   "name": "Leo",
-                  "part-of": true
+                  "partOf": true
               }
             },
-            "meaning": "Berenice's hair"
+            "meaning": ["Berenice's hair"]
         },
         {
             "name": "Corona Australis",
@@ -371,7 +371,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "southern crown"
+            "meaning": ["southern crown"]
         },
         {
             "name": "Corona Borealis",
@@ -384,7 +384,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "northern crown"
+            "meaning": ["northern crown"]
         },
         {
             "name": "Corvus",
@@ -397,7 +397,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "crow"
+            "meaning": ["crow"]
         },
         {
             "name": "Crater",
@@ -410,7 +410,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "cup"
+            "meaning": ["cup"]
         },
         {
             "name": "Crux",
@@ -425,10 +425,10 @@
               "source": "Uranometria, created by Keyser and de Houtman",
               "precursor": {
                   "name": "Centaurus",
-                  "part-of": true
+                  "partOf": true
               }
             },
-            "meaning": "southern cross"
+            "meaning": ["southern cross"]
         },
         {
             "name": "Cygnus",
@@ -439,12 +439,9 @@
             "genitive": "Cygni",
             "origin": {
                 "ancient": true,
-                "source": [
-                    "swan",
-                    "northern cross"
-                ]
+                "source": "Ptolemy"
             },
-            "meaning": "cup"
+            "meaning": ["swan"]
         },
         {
             "name": "Delphinus",
@@ -457,7 +454,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "dolphin"
+            "meaning": ["dolphin"]
         },
         {
             "name": "Dorado",
@@ -471,7 +468,7 @@
               "year": 1603,
               "source": "Uranometria, created by Keyser and de Houtman"
             },
-            "meaning": "dolphinfish"
+            "meaning": ["dolphinfish"]
         },
         {
             "name": "Draco",
@@ -484,7 +481,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "dragon"
+            "meaning": ["dragon"]
         },
         {
             "name": "Equuleus",
@@ -497,7 +494,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "pony"
+            "meaning": ["pony"]
         },
         {
             "name": "Eridanus",
@@ -510,7 +507,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "river Eridanus"
+            "meaning": ["river Eridanus"]
         },
         {
             "name": "Fornax",
@@ -524,7 +521,7 @@
               "year": 1763,
               "source": "Lacaille"
             },
-            "meaning": "chemical furnace"
+            "meaning": ["chemical furnace"]
         },
         {
             "name": "Gemini",
@@ -537,7 +534,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "twins"
+            "meaning": ["twins"]
         },
         {
             "name": "Grus",
@@ -551,7 +548,7 @@
               "year": 1603,
               "source": "Uranometria, created by Keyser and de Houtman"
             },
-            "meaning": "crane"
+            "meaning": ["crane"]
         },
         {
             "name": "Hercules",
@@ -564,7 +561,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "Hercules"
+            "meaning": ["Hercules"]
         },
         {
             "name": "Horologium",
@@ -578,7 +575,7 @@
               "year": 1763,
               "source": "Lacaille"
             },
-            "meaning": "pendulum clock"
+            "meaning": ["pendulum clock"]
         },
         {
             "name": "Hydra",
@@ -591,7 +588,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "Hydra"
+            "meaning": ["Hydra"]
         },
         {
             "name": "Hydrus",
@@ -605,7 +602,7 @@
               "year": 1603,
               "source": "Uranometria, created by Keyser and de Houtman"
             },
-            "meaning": "lesser water snake"
+            "meaning": ["lesser water snake"]
         },
         {
             "name": "Indus",
@@ -619,7 +616,7 @@
               "year": 1603,
               "source": "Uranometria, created by Keyser and de Houtman"
             },
-            "meaning": "Indian"
+            "meaning": ["indian"]
         },
         {
             "name": "Lacerta",
@@ -633,7 +630,7 @@
               "year": 1690,
               "source": "Firmamentum Sobiescianum, Hevelius"
             },
-            "meaning": "lizard"
+            "meaning": ["lizard"]
         },
         {
             "name": "Leo",
@@ -646,7 +643,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "lion"
+            "meaning": ["lion"]
         },
         {
             "name": "Leo Minor",
@@ -660,7 +657,7 @@
               "year": 1690,
               "source": "Firmamentum Sobiescianum, Hevelius"
             },
-            "meaning": "lesser lion"
+            "meaning": ["lesser lion"]
         },
         {
             "name": "Lepus",
@@ -673,7 +670,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "hare"
+            "meaning": ["hare"]
         },
         {
             "name": "Libra",
@@ -686,7 +683,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "balance"
+            "meaning": ["balance"]
         },
         {
             "name": "Lupus",
@@ -699,7 +696,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "wolf"
+            "meaning": ["wolf"]
         },
         {
             "name": "Lynx",
@@ -713,7 +710,7 @@
               "year": 1690,
               "source": "Firmamentum Sobiescianum, Hevelius"
             },
-            "meaning": "lynx"
+            "meaning": ["lynx"]
         },
         {
             "name": "Lyra",
@@ -743,7 +740,7 @@
               "year": 1763,
               "source": "Lacaille"
             },
-            "meaning": "Table Mountain"
+            "meaning": ["Table Mountain"]
         },
         {
             "name": "Microscopium",
@@ -758,10 +755,10 @@
               "source": "Lacaille",
               "precursor": {
                     "name": "Argo Navis",
-                    "part-of": true
+                    "partOf": true
                 }
             },
-            "meaning": "microscope"
+            "meaning": ["microscope"]
         },
         {
             "name": "Monoceros",
@@ -775,7 +772,7 @@
               "year": 1613,
               "source": "Plancius"
             },
-            "meaning": "unicorn"
+            "meaning": ["unicorn"]
         },
         {
             "name": "Musca",
@@ -789,7 +786,7 @@
               "year": 1603,
               "source": "Uranometria, created by Keyser and de Houtman"
             },
-            "meaning": "fly"
+            "meaning": ["fly"]
         },
         {
             "name": "Norma",
@@ -804,10 +801,10 @@
               "source": "Lacaille",
               "precursor": {
                     "name": "Argo Navis",
-                    "part-of": true
+                    "partOf": true
                 }
             },
-            "meaning": "carpenter's level"
+            "meaning": ["carpenter's level"]
         },
         {
             "name": "Octans",
@@ -822,10 +819,10 @@
               "source": "Lacaille",
               "precursor": {
                     "name": "Argo Navis",
-                    "part-of": true
+                    "partOf": true
                 }
             },
-            "meaning": "octant"
+            "meaning": ["octant"]
         },
         {
             "name": "Ophiuchus",
@@ -838,7 +835,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "serpent-bearer"
+            "meaning": ["serpent-bearer"]
         },
         {
             "name": "Orion",
@@ -851,7 +848,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "Orion"
+            "meaning": ["Orion"]
         },
         {
             "name": "Pavo",
@@ -865,7 +862,7 @@
               "year": 1603,
               "source": "Uranometria, created by Keyser and de Houtman"
             },
-            "meaning": "peacock"
+            "meaning": ["peacock"]
         },
         {
             "name": "Pegasus",
@@ -878,7 +875,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "Pegasus"
+            "meaning": ["Pegasus"]
         },
         {
             "name": "Perseus",
@@ -891,7 +888,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "Perseus"
+            "meaning": ["Perseus"]
         },
         {
             "name": "Phoenix",
@@ -905,7 +902,7 @@
               "year": 1603,
               "source": "Uranometria, created by Keyser and de Houtman"
             },
-            "meaning": "phoenix"
+            "meaning": ["phoenix"]
         },
         {
             "name": "Pictor",
@@ -920,10 +917,10 @@
               "source": "Lacaille",
               "precursor": {
                     "name": "Argo Navis",
-                    "part-of": true
+                    "partOf": true
                 }
             },
-            "meaning": "easel"
+            "meaning": ["easel"]
         },
         {
             "name": "Pisces",
@@ -936,7 +933,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "fishes"
+            "meaning": ["fishes"]
         },
         {
             "name": "Piscis Austrinus",
@@ -949,7 +946,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "southern fish"
+            "meaning": ["southern fish"]
         },
         {
             "name": "Puppis",
@@ -964,10 +961,10 @@
               "source": "Lacaille",
               "precursor": {
                   "name": "Argo Navis",
-                  "part-of": true
+                  "partOf": true
               }
             },
-            "meaning": "poop deck"
+            "meaning": ["poop deck"]
         },
         {
             "name": "Pyxis",
@@ -982,10 +979,10 @@
               "source": "Lacaille",
               "precursor": {
                     "name": "Argo Navis",
-                    "part-of": true
+                    "partOf": true
                 }
             },
-            "meaning": "mariner's compass"
+            "meaning": ["mariner's compass"]
         },
         {
             "name": "Reticulum",
@@ -1000,10 +997,10 @@
               "source": "Lacaille",
               "precursor": {
                     "name": "Argo Navis",
-                    "part-of": true
+                    "partOf": true
                 }
             },
-            "meaning": "eyepiece graticule"
+            "meaning": ["eyepiece graticule"]
         },
         {
             "name": "Sagitta",
@@ -1016,7 +1013,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "arrow"
+            "meaning": ["arrow"]
         },
         {
             "name": "Sagittarius",
@@ -1029,7 +1026,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "archer"
+            "meaning": ["archer"]
         },
         {
             "name": "Scorpius",
@@ -1042,7 +1039,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "scorpion"
+            "meaning": ["scorpion"]
         },
         {
             "name": "Sculptor",
@@ -1057,10 +1054,10 @@
               "source": "Lacaille",
               "precursor": {
                     "name": "Argo Navis",
-                    "part-of": true
+                    "partOf": true
                 }
             },
-            "meaning": "sculptor"
+            "meaning": ["sculptor"]
         },
         {
             "name": "Scutum",
@@ -1074,7 +1071,7 @@
               "year": 1690,
               "source": "Firmamentum Sobiescianum, Hevelius"
             },
-            "meaning": "shield"
+            "meaning": ["shield"]
         },
         {
             "name": "Serpens",
@@ -1087,7 +1084,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "snake"
+            "meaning": ["snake"]
         },
         {
             "name": "Sextans",
@@ -1101,7 +1098,7 @@
               "year": 1690,
               "source": "Firmamentum Sobiescianum, Hevelius"
             },
-            "meaning": "sextant"
+            "meaning": ["sextant"]
         },
         {
             "name": "Taurus",
@@ -1114,7 +1111,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "bull"
+            "meaning": ["bull"]
         },
         {
             "name": "Telescopium",
@@ -1129,10 +1126,10 @@
               "source": "Lacaille",
               "precursor": {
                     "name": "Argo Navis",
-                    "part-of": true
+                    "partOf": true
                 }
             },
-            "meaning": "telescope"
+            "meaning": ["telescope"]
         },
         {
             "name": "Triangulum",
@@ -1145,7 +1142,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "triangle"
+            "meaning": ["triangle"]
         },
         {
             "name": "Triangulum Australe",
@@ -1159,7 +1156,7 @@
               "year": 1603,
               "source": "Uranometria, created by Keyser and de Houtman"
             },
-            "meaning": "southern triangle"
+            "meaning": ["southern triangle"]
         },
         {
             "name": "Tucana",
@@ -1173,7 +1170,7 @@
               "year": 1603,
               "source": "Uranometria, created by Keyser and de Houtman"
             },
-            "meaning": "toucan"
+            "meaning": ["toucan"]
         },
         {
             "name": "Ursa Major",
@@ -1186,7 +1183,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "great bear"
+            "meaning": ["great bear"]
         },
         {
             "name": "Ursa Minor",
@@ -1199,7 +1196,7 @@
                 "ancient": true,
                 "source": "Ptolemy"
             },
-            "meaning": "lesser bear"
+            "meaning": ["lesser bear"]
         },
         {
             "name": "Vela",
@@ -1214,10 +1211,10 @@
               "source": "Lacaille",
               "precursor": {
                   "name": "Argo Navis",
-                  "part-of": true
+                  "partOf": true
               }
             },
-            "meaning": "sails"
+            "meaning": ["sails"]
         },
         {
             "name": "Virgo",
@@ -1247,7 +1244,7 @@
               "year": 1603,
               "source": "Uranometria, created by Keyser and de Houtman"
             },
-            "meaning": "flying fish"
+            "meaning": ["flying fish"]
         },
         {
             "name": "Vulpecula",
@@ -1261,7 +1258,7 @@
               "year": 1690,
               "source": "Firmamentum Sobiescianum, Hevelius"
             },
-            "meaning": "fox"
+            "meaning": ["fox"]
         }
     ]
 }
