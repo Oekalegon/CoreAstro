@@ -1,0 +1,1267 @@
+
+{
+    "version": "2021-06-01T00:00:00.000Z",
+    "source": "https://en.wikipedia.org/wiki/IAU_designated_constellations",
+    "constellations": [
+        {
+            "name": "Andromeda",
+            "abbreviations": {
+                "IAU": "And",
+                "NASA": "Andr"
+            },
+            "genitive": "Andromedae",
+            "origin": {
+              "ancient": true,
+              "source": "Ptolemy"
+            },
+            "meaning": "Andromeda"
+        },
+        {
+            "name": "Antlia",
+            "abbreviations": {
+                "IAU": "Ant",
+                "NASA": "Antl"
+            },
+            "genitive": "Antliae",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille"
+            },
+            "meaning": "air pump"
+        },
+        {
+            "name": "Apus",
+            "abbreviations": {
+                "IAU": "Aps",
+                "NASA": "Apus"
+            },
+            "genitive": "Apodis",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman"
+            },
+            "meaning": [
+                "bird-of-paradise",
+                "exotic bird",
+                "extraordinary bird"
+            ]
+        },
+        {
+            "name": "Aquarius",
+            "abbreviations": {
+                "IAU": "Aqr",
+                "NASA": "Aqar"
+            },
+            "genitive": "Aquarii",
+            "origin": {
+              "ancient": true,
+              "source": "Ptolemy"
+            },
+            "meaning": "water-bearer"
+        },
+        {
+            "name": "Aquila",
+            "abbreviations": {
+                "IAU": "Aql",
+                "NASA": "Aqil"
+            },
+            "genitive": "Aquilae",
+            "origin": {
+              "ancient": true,
+              "source": "Ptolemy"
+            },
+            "meaning": "eagle"
+        },
+        {
+            "name": "Ara",
+            "abbreviations": {
+                "IAU": "Ara",
+                "NASA": "Arae"
+            },
+            "genitive": "Arae",
+            "origin": {
+              "ancient": true,
+              "source": "Ptolemy"
+            },
+            "meaning": "altar"
+        },
+        {
+            "name": "Aries",
+            "abbreviations": {
+                "IAU": "Ari",
+                "NASA": "Arie"
+            },
+            "genitive": "Arietis",
+            "origin": {
+              "ancient": true,
+              "source": "Ptolemy"
+            },
+            "meaning": "ram"
+        },
+        {
+            "name": "Auriga",
+            "abbreviations": {
+                "IAU": "Aur",
+                "NASA": "Auri"
+            },
+            "genitive": "Aurigae",
+            "origin": {
+              "ancient": true,
+              "source": "Ptolemy"
+            },
+            "meaning": "charioteer"
+        },
+        {
+            "name": "Boötes",
+            "abbreviations": {
+                "IAU": "Boo",
+                "NASA": "Boot"
+            },
+            "genitive": "Boötis",
+            "origin": {
+              "ancient": true,
+              "source": "Ptolemy"
+            },
+            "meaning": "herdsman"
+        },
+        {
+            "name": "Caelum",
+            "abbreviations": {
+                "IAU": "Cae",
+                "NASA": "Cael"
+            },
+            "genitive": "Caeli",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille"
+            },
+            "meaning": [
+                "chisel",
+                "engraving tool"
+            ]
+        },
+        {
+            "name": "Camelopardalis",
+            "abbreviations": {
+                "IAU": "Cam",
+                "NASA": "Caml"
+            },
+            "genitive": "Camelopardalis",
+            "origin": {
+              "ancient": false,
+              "year": 1613,
+              "source": "Plancius"
+            },
+            "meaning": "giraffe"
+        },
+        {
+            "name": "Cancer",
+            "abbreviations": {
+                "IAU": "Cnc",
+                "NASA": "Canc"
+            },
+            "genitive": "Cancri",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "crab"
+        },
+        {
+            "name": "Canes Venatici",
+            "abbreviations": {
+                "IAU": "CVn",
+                "NASA": "CVen"
+            },
+            "genitive": "Canum Venaticorum",
+            "origin": {
+              "ancient": false,
+              "year": 1690,
+              "source": "Firmamentum Sobiescianum, Hevelius"
+            },
+            "meaning": "hunting dogs"
+        },
+        {
+            "name": "Canis Major",
+            "abbreviations": {
+                "IAU": "CMa",
+                "NASA": "CMaj"
+            },
+            "genitive": "Canis Majoris",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "greater dog"
+        },
+        {
+            "name": "Canis Minor",
+            "abbreviations": {
+                "IAU": "CMi",
+                "NASA": "CMin"
+            },
+            "genitive": "Canis Minoris",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "lesser dog"
+        },
+        {
+            "name": "Capricornus",
+            "abbreviations": {
+                "IAU": "Cap",
+                "NASA": "Capr"
+            },
+            "genitive": "Capricorni",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "lsea goat"
+        },
+        {
+            "name": "Carina",
+            "abbreviations": {
+                "IAU": "Car",
+                "NASA": "Cari"
+            },
+            "genitive": "Carinae",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille",
+              "precursor": {
+                  "name": "Argo Navis",
+                  "part-of": true
+              }
+            },
+            "meaning": "keel"
+        },
+        {
+            "name": "Cassiopeia",
+            "abbreviations": {
+                "IAU": "Cas",
+                "NASA": "Cass"
+            },
+            "genitive": "Cassiopeiae",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "Cassiopeia"
+        },
+        {
+            "name": "Centaurus",
+            "abbreviations": {
+                "IAU": "Cen",
+                "NASA": "Cent"
+            },
+            "genitive": "Centauri",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "centaur"
+        },
+        {
+            "name": "Cepheus",
+            "abbreviations": {
+                "IAU": "Cep",
+                "NASA": "Ceph"
+            },
+            "genitive": "Cephei",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "Cepheus"
+        },
+        {
+            "name": "Cetus",
+            "abbreviations": {
+                "IAU": "Cet",
+                "NASA": "Ceti"
+            },
+            "genitive": "Ceti",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": [
+                "sea monster",
+                "whale"
+            ]
+        },
+        {
+            "name": "Chamaeleon",
+            "abbreviations": {
+                "IAU": "Cha",
+                "NASA": "Cham"
+            },
+            "genitive": "Chamaeleontis",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman"
+            },
+            "meaning": "chameleon"
+        },
+        {
+            "name": "Circinus",
+            "abbreviations": {
+                "IAU": "Cir",
+                "NASA": "Circ"
+            },
+            "genitive": "Circini",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille"
+            },
+            "meaning": "compasses"
+        },
+        {
+            "name": "Columba",
+            "abbreviations": {
+                "IAU": "Col",
+                "NASA": "Colm"
+            },
+            "genitive": "Columbae",
+            "origin": {
+              "ancient": false,
+              "year": 1592,
+              "source": "Plancius",
+              "precursor": {
+                  "name": "Canis Major",
+                  "part-of": true
+              }
+            },
+            "meaning": "dove"
+        },
+        {
+            "name": "Coma Berenices",
+            "abbreviations": {
+                "IAU": "Com",
+                "NASA": "Coma"
+            },
+            "genitive": "Comae Berenices",
+            "origin": {
+              "ancient": false,
+              "year": 1536,
+              "source": "Caspar Vopel",
+              "precursor": {
+                  "name": "Leo",
+                  "part-of": true
+              }
+            },
+            "meaning": "Berenice's hair"
+        },
+        {
+            "name": "Corona Australis",
+            "abbreviations": {
+                "IAU": "CrA",
+                "NASA": "CorA"
+            },
+            "genitive": "Coronae Australis",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "southern crown"
+        },
+        {
+            "name": "Corona Borealis",
+            "abbreviations": {
+                "IAU": "CrB",
+                "NASA": "CorB"
+            },
+            "genitive": "Coronae Borealis",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "northern crown"
+        },
+        {
+            "name": "Corvus",
+            "abbreviations": {
+                "IAU": "Crv",
+                "NASA": "Corv"
+            },
+            "genitive": "Corvi",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "crow"
+        },
+        {
+            "name": "Crater",
+            "abbreviations": {
+                "IAU": "Crt",
+                "NASA": "Crat"
+            },
+            "genitive": "Crateris",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "cup"
+        },
+        {
+            "name": "Crux",
+            "abbreviations": {
+                "IAU": "Cru",
+                "NASA": "Cruc"
+            },
+            "genitive": "Crucis",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman",
+              "precursor": {
+                  "name": "Centaurus",
+                  "part-of": true
+              }
+            },
+            "meaning": "southern cross"
+        },
+        {
+            "name": "Cygnus",
+            "abbreviations": {
+                "IAU": "Cyg",
+                "NASA": "Cygn"
+            },
+            "genitive": "Cygni",
+            "origin": {
+                "ancient": true,
+                "source": [
+                    "swan",
+                    "northern cross"
+                ]
+            },
+            "meaning": "cup"
+        },
+        {
+            "name": "Delphinus",
+            "abbreviations": {
+                "IAU": "Del",
+                "NASA": "Dlph"
+            },
+            "genitive": "Delphini",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "dolphin"
+        },
+        {
+            "name": "Dorado",
+            "abbreviations": {
+                "IAU": "Dor",
+                "NASA": "Dora"
+            },
+            "genitive": "Doradus",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman"
+            },
+            "meaning": "dolphinfish"
+        },
+        {
+            "name": "Draco",
+            "abbreviations": {
+                "IAU": "Dra",
+                "NASA": "Drac"
+            },
+            "genitive": "Draconis",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "dragon"
+        },
+        {
+            "name": "Equuleus",
+            "abbreviations": {
+                "IAU": "Equ",
+                "NASA": "Equl"
+            },
+            "genitive": "Equulei",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "pony"
+        },
+        {
+            "name": "Eridanus",
+            "abbreviations": {
+                "IAU": "Eri",
+                "NASA": "Erid"
+            },
+            "genitive": "Eridani",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "river Eridanus"
+        },
+        {
+            "name": "Fornax",
+            "abbreviations": {
+                "IAU": "For",
+                "NASA": "Forn"
+            },
+            "genitive": "Fornacis",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille"
+            },
+            "meaning": "chemical furnace"
+        },
+        {
+            "name": "Gemini",
+            "abbreviations": {
+                "IAU": "Gem",
+                "NASA": "Gemi"
+            },
+            "genitive": "Geminorum",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "twins"
+        },
+        {
+            "name": "Grus",
+            "abbreviations": {
+                "IAU": "Gru",
+                "NASA": "Grus"
+            },
+            "genitive": "Gruis",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman"
+            },
+            "meaning": "crane"
+        },
+        {
+            "name": "Hercules",
+            "abbreviations": {
+                "IAU": "Her",
+                "NASA": "Herc"
+            },
+            "genitive": "Herculis",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "Hercules"
+        },
+        {
+            "name": "Horologium",
+            "abbreviations": {
+                "IAU": "Hor",
+                "NASA": "Horo"
+            },
+            "genitive": "Horologii",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille"
+            },
+            "meaning": "pendulum clock"
+        },
+        {
+            "name": "Hydra",
+            "abbreviations": {
+                "IAU": "Hya",
+                "NASA": "Hyda"
+            },
+            "genitive": "Hydrae",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "Hydra"
+        },
+        {
+            "name": "Hydrus",
+            "abbreviations": {
+                "IAU": "Hyi",
+                "NASA": "Hydi"
+            },
+            "genitive": "Hydri",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman"
+            },
+            "meaning": "lesser water snake"
+        },
+        {
+            "name": "Indus",
+            "abbreviations": {
+                "IAU": "Ind",
+                "NASA": "Indi"
+            },
+            "genitive": "Indi",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman"
+            },
+            "meaning": "Indian"
+        },
+        {
+            "name": "Lacerta",
+            "abbreviations": {
+                "IAU": "Lac",
+                "NASA": "Lacr"
+            },
+            "genitive": "Lacertae",
+            "origin": {
+              "ancient": false,
+              "year": 1690,
+              "source": "Firmamentum Sobiescianum, Hevelius"
+            },
+            "meaning": "lizard"
+        },
+        {
+            "name": "Leo",
+            "abbreviations": {
+                "IAU": "Leo",
+                "NASA": "Leon"
+            },
+            "genitive": "Leonis",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "lion"
+        },
+        {
+            "name": "Leo Minor",
+            "abbreviations": {
+                "IAU": "LMi",
+                "NASA": "LMin"
+            },
+            "genitive": "Leonis Minoris",
+            "origin": {
+              "ancient": false,
+              "year": 1690,
+              "source": "Firmamentum Sobiescianum, Hevelius"
+            },
+            "meaning": "lesser lion"
+        },
+        {
+            "name": "Lepus",
+            "abbreviations": {
+                "IAU": "Lep",
+                "NASA": "Leps"
+            },
+            "genitive": "Leporis",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "hare"
+        },
+        {
+            "name": "Libra",
+            "abbreviations": {
+                "IAU": "Lib",
+                "NASA": "Libr"
+            },
+            "genitive": "Librae",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "balance"
+        },
+        {
+            "name": "Lupus",
+            "abbreviations": {
+                "IAU": "Lup",
+                "NASA": "Lupi"
+            },
+            "genitive": "Lupi",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "wolf"
+        },
+        {
+            "name": "Lynx",
+            "abbreviations": {
+                "IAU": "Lyn",
+                "NASA": "Lync"
+            },
+            "genitive": "Lyncis",
+            "origin": {
+              "ancient": false,
+              "year": 1690,
+              "source": "Firmamentum Sobiescianum, Hevelius"
+            },
+            "meaning": "lynx"
+        },
+        {
+            "name": "Lyra",
+            "abbreviations": {
+                "IAU": "Lyr",
+                "NASA": "Lyra"
+            },
+            "genitive": "Lyrae",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": [
+                "lyre",
+                "harp"
+            ]
+        },
+        {
+            "name": "Mensa",
+            "abbreviations": {
+                "IAU": "Men",
+                "NASA": "Mens"
+            },
+            "genitive": "Mensae",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille"
+            },
+            "meaning": "Table Mountain"
+        },
+        {
+            "name": "Microscopium",
+            "abbreviations": {
+                "IAU": "Mic",
+                "NASA": "Micr"
+            },
+            "genitive": "Microscopii",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille",
+              "precursor": {
+                    "name": "Argo Navis",
+                    "part-of": true
+                }
+            },
+            "meaning": "microscope"
+        },
+        {
+            "name": "Monoceros",
+            "abbreviations": {
+                "IAU": "Mon",
+                "NASA": "Mono"
+            },
+            "genitive": "Monocerotis",
+            "origin": {
+              "ancient": false,
+              "year": 1613,
+              "source": "Plancius"
+            },
+            "meaning": "unicorn"
+        },
+        {
+            "name": "Musca",
+            "abbreviations": {
+                "IAU": "Mus",
+                "NASA": "Musc"
+            },
+            "genitive": "Muscae",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman"
+            },
+            "meaning": "fly"
+        },
+        {
+            "name": "Norma",
+            "abbreviations": {
+                "IAU": "Nor",
+                "NASA": "Norm"
+            },
+            "genitive": "Normae",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille",
+              "precursor": {
+                    "name": "Argo Navis",
+                    "part-of": true
+                }
+            },
+            "meaning": "carpenter's level"
+        },
+        {
+            "name": "Octans",
+            "abbreviations": {
+                "IAU": "Oct",
+                "NASA": "Octn"
+            },
+            "genitive": "Octantis",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille",
+              "precursor": {
+                    "name": "Argo Navis",
+                    "part-of": true
+                }
+            },
+            "meaning": "octant"
+        },
+        {
+            "name": "Ophiuchus",
+            "abbreviations": {
+                "IAU": "Oph",
+                "NASA": "Ophi"
+            },
+            "genitive": "Ophiuchi",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "serpent-bearer"
+        },
+        {
+            "name": "Orion",
+            "abbreviations": {
+                "IAU": "Ori",
+                "NASA": "Orio"
+            },
+            "genitive": "Orionis",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "Orion"
+        },
+        {
+            "name": "Pavo",
+            "abbreviations": {
+                "IAU": "Pav",
+                "NASA": "Pavo"
+            },
+            "genitive": "Pavonis",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman"
+            },
+            "meaning": "peacock"
+        },
+        {
+            "name": "Pegasus",
+            "abbreviations": {
+                "IAU": "Peg",
+                "NASA": "Pegs"
+            },
+            "genitive": "Pegasi",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "Pegasus"
+        },
+        {
+            "name": "Perseus",
+            "abbreviations": {
+                "IAU": "Per",
+                "NASA": "Pers"
+            },
+            "genitive": "Persei",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "Perseus"
+        },
+        {
+            "name": "Phoenix",
+            "abbreviations": {
+                "IAU": "Phe",
+                "NASA": "Phoe"
+            },
+            "genitive": "Phoenicis",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman"
+            },
+            "meaning": "phoenix"
+        },
+        {
+            "name": "Pictor",
+            "abbreviations": {
+                "IAU": "Pic",
+                "NASA": "Pict"
+            },
+            "genitive": "Pictoris",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille",
+              "precursor": {
+                    "name": "Argo Navis",
+                    "part-of": true
+                }
+            },
+            "meaning": "easel"
+        },
+        {
+            "name": "Pisces",
+            "abbreviations": {
+                "IAU": "Psc",
+                "NASA": "Pisc"
+            },
+            "genitive": "Piscium",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "fishes"
+        },
+        {
+            "name": "Piscis Austrinus",
+            "abbreviations": {
+                "IAU": "PsA",
+                "NASA": "PscA"
+            },
+            "genitive": "Piscis Austrini",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "southern fish"
+        },
+        {
+            "name": "Puppis",
+            "abbreviations": {
+                "IAU": "Pup",
+                "NASA": "Pupp"
+            },
+            "genitive": "Puppis",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille",
+              "precursor": {
+                  "name": "Argo Navis",
+                  "part-of": true
+              }
+            },
+            "meaning": "poop deck"
+        },
+        {
+            "name": "Pyxis",
+            "abbreviations": {
+                "IAU": "Pyx",
+                "NASA": "Pyxi"
+            },
+            "genitive": "Pyxidis",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille",
+              "precursor": {
+                    "name": "Argo Navis",
+                    "part-of": true
+                }
+            },
+            "meaning": "mariner's compass"
+        },
+        {
+            "name": "Reticulum",
+            "abbreviations": {
+                "IAU": "Ret",
+                "NASA": "Reti"
+            },
+            "genitive": "Reticuli",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille",
+              "precursor": {
+                    "name": "Argo Navis",
+                    "part-of": true
+                }
+            },
+            "meaning": "eyepiece graticule"
+        },
+        {
+            "name": "Sagitta",
+            "abbreviations": {
+                "IAU": "Sge",
+                "NASA": "Sgte"
+            },
+            "genitive": "Sagittae",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "arrow"
+        },
+        {
+            "name": "Sagittarius",
+            "abbreviations": {
+                "IAU": "Sgr",
+                "NASA": "Sgtr"
+            },
+            "genitive": "Sagittarii",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "archer"
+        },
+        {
+            "name": "Scorpius",
+            "abbreviations": {
+                "IAU": "Sco",
+                "NASA": "Scor"
+            },
+            "genitive": "Scorpii",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "scorpion"
+        },
+        {
+            "name": "Sculptor",
+            "abbreviations": {
+                "IAU": "Scl",
+                "NASA": "Scul"
+            },
+            "genitive": "Sculptoris",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille",
+              "precursor": {
+                    "name": "Argo Navis",
+                    "part-of": true
+                }
+            },
+            "meaning": "sculptor"
+        },
+        {
+            "name": "Scutum",
+            "abbreviations": {
+                "IAU": "Sct",
+                "NASA": "Scut"
+            },
+            "genitive": "Scuti",
+            "origin": {
+              "ancient": false,
+              "year": 1690,
+              "source": "Firmamentum Sobiescianum, Hevelius"
+            },
+            "meaning": "shield"
+        },
+        {
+            "name": "Serpens",
+            "abbreviations": {
+                "IAU": "Ser",
+                "NASA": "Serp"
+            },
+            "genitive": "Serpentis",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "snake"
+        },
+        {
+            "name": "Sextans",
+            "abbreviations": {
+                "IAU": "Sex",
+                "NASA": "Sext"
+            },
+            "genitive": "Sextantis",
+            "origin": {
+              "ancient": false,
+              "year": 1690,
+              "source": "Firmamentum Sobiescianum, Hevelius"
+            },
+            "meaning": "sextant"
+        },
+        {
+            "name": "Taurus",
+            "abbreviations": {
+                "IAU": "Tau",
+                "NASA": "Taur"
+            },
+            "genitive": "Tauri",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "bull"
+        },
+        {
+            "name": "Telescopium",
+            "abbreviations": {
+                "IAU": "Tel",
+                "NASA": "Tele"
+            },
+            "genitive": "Telescopii",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille",
+              "precursor": {
+                    "name": "Argo Navis",
+                    "part-of": true
+                }
+            },
+            "meaning": "telescope"
+        },
+        {
+            "name": "Triangulum",
+            "abbreviations": {
+                "IAU": "Tri",
+                "NASA": "Tria"
+            },
+            "genitive": "Trianguli",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "triangle"
+        },
+        {
+            "name": "Triangulum Australe",
+            "abbreviations": {
+                "IAU": "TrA",
+                "NASA": "TrAu"
+            },
+            "genitive": "Trianguli Australis",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman"
+            },
+            "meaning": "southern triangle"
+        },
+        {
+            "name": "Tucana",
+            "abbreviations": {
+                "IAU": "Tuc",
+                "NASA": "Tucn"
+            },
+            "genitive": "Tucanae",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman"
+            },
+            "meaning": "toucan"
+        },
+        {
+            "name": "Ursa Major",
+            "abbreviations": {
+                "IAU": "UMa",
+                "NASA": "UMaj"
+            },
+            "genitive": "Ursae Majoris",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "great bear"
+        },
+        {
+            "name": "Ursa Minor",
+            "abbreviations": {
+                "IAU": "UMi",
+                "NASA": "UMin"
+            },
+            "genitive": "Ursae Minoris",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": "lesser bear"
+        },
+        {
+            "name": "Vela",
+            "abbreviations": {
+                "IAU": "Vel",
+                "NASA": "Velr"
+            },
+            "genitive": "Velorum",
+            "origin": {
+              "ancient": false,
+              "year": 1763,
+              "source": "Lacaille",
+              "precursor": {
+                  "name": "Argo Navis",
+                  "part-of": true
+              }
+            },
+            "meaning": "sails"
+        },
+        {
+            "name": "Virgo",
+            "abbreviations": {
+                "IAU": "Vir",
+                "NASA": "Virg"
+            },
+            "genitive": "Virginis",
+            "origin": {
+                "ancient": true,
+                "source": "Ptolemy"
+            },
+            "meaning": [
+                "virgin",
+                "maiden"
+            ]
+        },
+        {
+            "name": "Volans",
+            "abbreviations": {
+                "IAU": "Vol",
+                "NASA": "Volantis"
+            },
+            "genitive": "Tucanae",
+            "origin": {
+              "ancient": false,
+              "year": 1603,
+              "source": "Uranometria, created by Keyser and de Houtman"
+            },
+            "meaning": "flying fish"
+        },
+        {
+            "name": "Vulpecula",
+            "abbreviations": {
+                "IAU": "Vul",
+                "NASA": "Vulp"
+            },
+            "genitive": "Vulpeculae",
+            "origin": {
+              "ancient": false,
+              "year": 1690,
+              "source": "Firmamentum Sobiescianum, Hevelius"
+            },
+            "meaning": "fox"
+        }
+    ]
+}
