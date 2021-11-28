@@ -14,10 +14,10 @@ final class VSOPTests: XCTestCase {
     
     func testVSOPFile() throws {
         let sun = SolarSystem.sun
-        print("\n** SUN **")
+        print("\n** SUN **  \(sun.constellation(on: Date()))")
         try self.printPositions(object: sun)
         for planet in SolarSystem.planets {
-            print("\n** \(planet.name!.uppercased()) **")
+            print("\n** \(planet.name!.uppercased()) **  \(planet.constellation(on: Date()))")
             try self.printPositions(object: planet)
         }
     }

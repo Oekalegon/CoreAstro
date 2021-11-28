@@ -37,11 +37,13 @@ public class CatalogStar: Star, CatalogObject {
     public let names: [StringLiteral]
     
     private let coordinates: Coordinates
+    private let constellation: Constellation?
     
-    public init(names: [StringLiteral], identifiers: [ObjectIdentifier], coordinates: Coordinates) throws {
+    public init(names: [StringLiteral], identifiers: [ObjectIdentifier], coordinates: Coordinates, constellation: Constellation? = nil) throws {
         self.names = names
         self.identifiers = identifiers
         self.coordinates = try coordinates.convert(to: .ICRS, positionType: .meanPosition)
+        self.constellation = constellation
     }
     
     public func names(language: String?) -> [String] {
@@ -88,6 +90,13 @@ public class CatalogStar: Star, CatalogObject {
     public func horizontalCoordinates(on date: Date, from location: GeographicalLocation) -> Coordinates {
         let icrs = self.equatorialCoordinates(on: date)
         return try! icrs.convert(to: .horizontal(at: date, for: location), positionType: .apparentPosition)
+    }
+    
+    public func constellation(on date: Date) -> Constellation {
+        if self.constellation == nil {
+            return Constellations.constellation(containing: coordinates)
+        }
+        return self.constellation!
     }
     
     public func elongation(on date: Date, from origin: CoordinateSystemOrigin) -> Angle {

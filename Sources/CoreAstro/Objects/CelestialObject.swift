@@ -91,6 +91,13 @@ public protocol CelestialObject {
     /// - Returns: The horizontal coordinates of the object
     func horizontalCoordinates(on date: Date, from location: GeographicalLocation) -> Coordinates
     
+    
+    /// Determines the constallation in which the object is locatied at the specified date.
+    /// - Parameters:
+    ///   - date: The date for which the constellation needs to be determined.
+    /// - Returns: The constellation containing the object at the specified date.
+    func constellation(on date: Date) -> Constellation
+    
     /// The elongation of the celestial object, which is the angular distance to the Sun.
     /// - Parameters:
     ///   - date: the date for which the elongation should be calculated

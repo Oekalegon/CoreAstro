@@ -282,6 +282,13 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         }
     }
     
+    /// The constallation containing these coordinates.
+    public var constellation: Constellation {
+        get {
+            return Constellations.constellation(containing: self)
+        }
+    }
+    
     /// The spherical coordinates (longitude, latitude, and optionally distance) of the coordinates on the
     /// celestial sphere.
     public var sphericalCoordinates: SphericalCoordinates {

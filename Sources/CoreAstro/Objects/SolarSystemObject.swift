@@ -116,6 +116,11 @@ public class VSOPObject : SolarSystemObject {
         return try! vsop.coordinates(on: date).convert(to: .horizontal(at: date, for: location), positionType: .meanPosition)
     }
     
+    public func constellation(on date: Date) -> Constellation {
+        let coord = vsop.coordinates(on: date)
+        return Constellations.constellation(containing: coord)
+    }
+    
     public func elongation(on date: Date, from origin: CoordinateSystemOrigin) -> Angle {
         let sun = SolarSystem.sun.eclipticalCoordinates(on: date, from: origin)
         let coord = self.eclipticalCoordinates(on: date, from: origin)
