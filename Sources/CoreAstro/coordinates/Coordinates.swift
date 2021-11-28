@@ -232,7 +232,7 @@ public enum PositionType {
     /// observer or an observer on the surface of the Earth (a topocentric observer).
     ///
     /// The position is corrected for proper motion (in case of a star), and also for nutation and abberation.
-    /// It should also include the effect of parallax.
+    /// It should also include the effect light time and the effect of parallax.
     case apparentPosition
 }
 
@@ -279,6 +279,20 @@ public struct Coordinates: Equatable, CustomStringConvertible {
                 return try! Distance(measure: self.sphericalCoordinates.distance!.convert(to: .astronomicalUnit))
             }
             return nil
+        }
+    }
+     
+    /// The effect of light time in days due to the time needed for light to travel the distance to the object.
+    ///
+    /// The effect of light time is a displacement in the *apparent* position of an object from its *true*
+    /// posistion.
+    public var effectOfLightTime: TimeInterval? {
+        get {
+            if !self.distanceIsKnown {
+                return nil
+            }
+            let τ = 0.0057755183 * self.distance!.convert(to: .astronomicalUnit).scalarValue
+            return TimeInterval(τ, unit: .day)
         }
     }
     
