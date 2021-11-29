@@ -36,6 +36,17 @@ public class CatalogStar: Star, CatalogObject {
     
     public let names: [StringLiteral]
     
+    public let types: [CelestialObjectType] 
+    
+    public func isOfType(_ type: CelestialObjectType) -> Bool {
+        for objectType in types {
+            if objectType.rawValue.contains(type.rawValue) {
+                return true
+            }
+        }
+        return false
+    }
+    
     private let coordinates: Coordinates
     private let constellation: Constellation?
     
