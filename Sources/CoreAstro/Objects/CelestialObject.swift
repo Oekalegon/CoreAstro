@@ -8,7 +8,7 @@
 import Foundation
 import CoreMeasure
 
-public enum CelestialObjectType : String {
+public enum CelestialObjectType : String, CaseIterable, CustomStringConvertible {
     case solarSystemObject = "/solar-system-object"
     case planetarySystemObject = "/solar-system-object/planetary-system-object"
     case planet = "/solar-system-object/planetary-system-object/planet"
@@ -43,6 +43,11 @@ public enum CelestialObjectType : String {
     case radioSource = "/radio-source"
     case infraRedSource = "/infra-red-source"
     
+    public var description: String {
+        get {
+            return self.rawValue
+        }
+    }
 }
 
 /// This protocol defines the features of a generic celestial object.

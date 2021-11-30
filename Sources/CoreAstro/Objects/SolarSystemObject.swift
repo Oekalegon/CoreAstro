@@ -29,7 +29,7 @@ public class VSOPObject : SolarSystemObject {
     
     init(name: String) {
         self.vsop = VSOP.shared[name]!
-        self._names.append(StringLiteral(string: name, language: "en"))
+        self._names.append(StringLiteral(name, language: "en"))
     }
     
     public var name: String? {

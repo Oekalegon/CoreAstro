@@ -11,4 +11,9 @@ public struct StringLiteral {
     
     public let string: String
     public let language: String?
+    
+    public init(_ string: String, language: String? = nil) {
+        self.string = string
+        self.language = language
+    }
 }
