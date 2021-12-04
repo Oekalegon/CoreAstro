@@ -2,7 +2,7 @@
 //  UMProperty+CoreDataProperties.swift
 //  
 //
-//  Created by Don Willems on 01/12/2021.
+//  Created by Don Willems on 04/12/2021.
 //
 //
 
@@ -13,7 +13,7 @@ import CoreData
 extension UMProperty {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<UMProperty> {
-        return NSFetchRequest<UMProperty>(entityName: "Property")
+        return NSFetchRequest<UMProperty>(entityName: "UMProperty")
     }
 
     @NSManaged public var booleanValue: Bool

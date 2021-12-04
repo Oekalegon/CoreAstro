@@ -2,7 +2,7 @@
 //  UMArea+CoreDataProperties.swift
 //  
 //
-//  Created by Don Willems on 01/12/2021.
+//  Created by Don Willems on 04/12/2021.
 //
 //
 
@@ -13,7 +13,7 @@ import CoreData
 extension UMArea {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<UMArea> {
-        return NSFetchRequest<UMArea>(entityName: "Area")
+        return NSFetchRequest<UMArea>(entityName: "UMArea")
     }
 
     @NSManaged public var maxDec: Double

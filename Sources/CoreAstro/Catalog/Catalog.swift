@@ -10,6 +10,12 @@ import CoreMeasure
 
 public protocol Catalog {
     
+    /// The name of the catalogue.
+    var name: String {get}
+    
+    /// The abbrevation for the catalogue used as a prefix in catalogue identifiers.
+    var abbreviation: String {get}
+    
     /// The number of objects in the catalog
     var count: Int {get}
     
@@ -48,6 +54,7 @@ struct CatalogTextFileReader {
                 }
             }
         }
+        
         return objects
     }
     

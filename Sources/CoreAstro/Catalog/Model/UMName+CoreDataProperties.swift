@@ -2,7 +2,7 @@
 //  UMName+CoreDataProperties.swift
 //  
 //
-//  Created by Don Willems on 01/12/2021.
+//  Created by Don Willems on 04/12/2021.
 //
 //
 
@@ -13,7 +13,7 @@ import CoreData
 extension UMName {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<UMName> {
-        return NSFetchRequest<UMName>(entityName: "Name")
+        return NSFetchRequest<UMName>(entityName: "UMName")
     }
 
     @NSManaged public var language: String?

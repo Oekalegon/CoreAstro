@@ -10,7 +10,19 @@ import CoreMeasure
 
 public struct BrightStarCatalog: Catalog {
     
-    public static let catalog = BrightStarCatalog()
+    public var name: String {
+        get {
+            return "Bright Star Catalogue"
+        }
+    }
+    
+    public var abbreviation: String {
+        get {
+            return "BSC"
+        }
+    }
+    
+    public static let catalog = try! BrightStarCatalog()
     
     private var objects = [CatalogObject]()
     
@@ -35,12 +47,14 @@ public struct BrightStarCatalog: Catalog {
     /// The types of the celestial object contained in the catalog.
     public var types = [CelestialObjectType]()
     
-    private init() {
+    private init() throws {
+        try PersistenceController.shared.createCatalog(catalog: self)
         self.load(from: Bundle.module.url(forResource: "BSC", withExtension: "json")!)
     }
     
     private func load(from url: URL) {
+        let coredataControl = PersistenceController.shared
         let fileReader = CatalogTextFileReader(url: url)
-        fileReader.load()
+        let objects = fileReader.load()
     }
 }

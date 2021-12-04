@@ -2,7 +2,7 @@
 //  UMCelestialObject+CoreDataProperties.swift
 //  
 //
-//  Created by Don Willems on 01/12/2021.
+//  Created by Don Willems on 04/12/2021.
 //
 //
 
@@ -13,7 +13,7 @@ import CoreData
 extension UMCelestialObject {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<UMCelestialObject> {
-        return NSFetchRequest<UMCelestialObject>(entityName: "CelestialObject")
+        return NSFetchRequest<UMCelestialObject>(entityName: "UMCelestialObject")
     }
 
     @NSManaged public var angularSeparation: Double

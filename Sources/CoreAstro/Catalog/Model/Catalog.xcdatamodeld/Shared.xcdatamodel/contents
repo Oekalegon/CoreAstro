@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19461" systemVersion="20E241" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Area" representedClassName=".UMArea" syncable="YES">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19461" systemVersion="21A559" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="UMArea" representedClassName="CoreAstro.UMArea" syncable="YES">
         <attribute name="maxDec" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="maxMagnitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="maxRA" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -9,14 +9,14 @@
         <attribute name="minMagnitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="minRA" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="minSize" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="objects" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CelestialObject" inverseName="area" inverseEntity="CelestialObject"/>
+        <relationship name="objects" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="UMCelestialObject" inverseName="area" inverseEntity="UMCelestialObject"/>
     </entity>
-    <entity name="Catalog" representedClassName=".UMCatalog" syncable="YES">
+    <entity name="UMCatalog" representedClassName="CoreAstro.UMCatalog" syncable="YES">
         <attribute name="abbreviation" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="objectIdentifiers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Identifier" inverseName="catalog" inverseEntity="Identifier"/>
+        <relationship name="objectIdentifiers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UMIdentifier" inverseName="catalog" inverseEntity="UMIdentifier"/>
     </entity>
-    <entity name="CelestialObject" representedClassName=".UMCelestialObject" syncable="YES">
+    <entity name="UMCelestialObject" representedClassName="CoreAstro.UMCelestialObject" syncable="YES">
         <attribute name="angularSeparation" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="angularSize" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="declination" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -28,33 +28,33 @@
         <attribute name="properMotionRA" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="rightAscension" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="type" attributeType="String"/>
-        <relationship name="area" optional="YES" maxCount="1" deletionRule="Nullify" ordered="YES" destinationEntity="Area" inverseName="objects" inverseEntity="Area"/>
-        <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CelestialObject" inverseName="parents" inverseEntity="CelestialObject"/>
-        <relationship name="designations" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ObjectDesignation" inverseName="object" inverseEntity="ObjectDesignation"/>
-        <relationship name="identifiers" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Identifier" inverseName="object" inverseEntity="Identifier"/>
-        <relationship name="names" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Name" inverseName="object" inverseEntity="Name"/>
-        <relationship name="parents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CelestialObject" inverseName="children" inverseEntity="CelestialObject"/>
-        <relationship name="properties" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Property" inverseName="object" inverseEntity="Property"/>
+        <relationship name="area" optional="YES" maxCount="1" deletionRule="Nullify" ordered="YES" destinationEntity="UMArea" inverseName="objects" inverseEntity="UMArea"/>
+        <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UMCelestialObject" inverseName="parents" inverseEntity="UMCelestialObject"/>
+        <relationship name="designations" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="UMObjectDesignation" inverseName="object" inverseEntity="UMObjectDesignation"/>
+        <relationship name="identifiers" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="UMIdentifier" inverseName="object" inverseEntity="UMIdentifier"/>
+        <relationship name="names" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="UMName" inverseName="object" inverseEntity="UMName"/>
+        <relationship name="parents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UMCelestialObject" inverseName="children" inverseEntity="UMCelestialObject"/>
+        <relationship name="properties" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="UMProperty" inverseName="object" inverseEntity="UMProperty"/>
     </entity>
-    <entity name="Identifier" representedClassName=".UMIdentifier" syncable="YES">
+    <entity name="UMIdentifier" representedClassName="CoreAstro.UMIdentifier" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="String"/>
-        <relationship name="catalog" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Catalog" inverseName="objectIdentifiers" inverseEntity="Catalog"/>
-        <relationship name="object" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CelestialObject" inverseName="identifiers" inverseEntity="CelestialObject"/>
+        <relationship name="catalog" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UMCatalog" inverseName="objectIdentifiers" inverseEntity="UMCatalog"/>
+        <relationship name="object" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UMCelestialObject" inverseName="identifiers" inverseEntity="UMCelestialObject"/>
     </entity>
-    <entity name="Name" representedClassName=".UMName" syncable="YES">
+    <entity name="UMName" representedClassName="CoreAstro.UMName" syncable="YES">
         <attribute name="language" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="object" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CelestialObject" inverseName="names" inverseEntity="CelestialObject"/>
+        <relationship name="object" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UMCelestialObject" inverseName="names" inverseEntity="UMCelestialObject"/>
     </entity>
-    <entity name="ObjectDesignation" representedClassName=".UMObjectDesignation" syncable="YES">
+    <entity name="UMObjectDesignation" representedClassName="CoreAstro.UMObjectDesignation" syncable="YES">
         <attribute name="bayer" optional="YES" attributeType="String"/>
         <attribute name="bayerComponent" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="constellationAbbreviation" optional="YES" attributeType="String"/>
         <attribute name="flamsteed" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="variableStar" optional="YES" attributeType="String"/>
-        <relationship name="object" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CelestialObject" inverseName="designations" inverseEntity="CelestialObject"/>
+        <relationship name="object" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UMCelestialObject" inverseName="designations" inverseEntity="UMCelestialObject"/>
     </entity>
-    <entity name="Property" representedClassName=".UMProperty" syncable="YES">
+    <entity name="UMProperty" representedClassName="CoreAstro.UMProperty" syncable="YES">
         <attribute name="booleanValue" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="comment" optional="YES" attributeType="String"/>
         <attribute name="dateValue" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -62,15 +62,15 @@
         <attribute name="stringValue" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
         <attribute name="unit" optional="YES" attributeType="String"/>
-        <relationship name="object" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CelestialObject" inverseName="properties" inverseEntity="CelestialObject"/>
+        <relationship name="object" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UMCelestialObject" inverseName="properties" inverseEntity="UMCelestialObject"/>
     </entity>
     <elements>
-        <element name="Area" positionX="9" positionY="171" width="128" height="164"/>
-        <element name="Catalog" positionX="-63" positionY="-18" width="128" height="74"/>
-        <element name="CelestialObject" positionX="-63" positionY="0" width="128" height="299"/>
-        <element name="Identifier" positionX="-36" positionY="81" width="128" height="74"/>
-        <element name="Name" positionX="-54" positionY="72" width="128" height="74"/>
-        <element name="ObjectDesignation" positionX="-18" positionY="108" width="128" height="119"/>
-        <element name="Property" positionX="-9" positionY="135" width="128" height="149"/>
+        <element name="UMArea" positionX="9" positionY="171" width="128" height="164"/>
+        <element name="UMCatalog" positionX="-63" positionY="-18" width="128" height="74"/>
+        <element name="UMCelestialObject" positionX="-63" positionY="0" width="128" height="299"/>
+        <element name="UMIdentifier" positionX="-36" positionY="81" width="128" height="74"/>
+        <element name="UMName" positionX="-54" positionY="72" width="128" height="74"/>
+        <element name="UMObjectDesignation" positionX="-18" positionY="108" width="128" height="119"/>
+        <element name="UMProperty" positionX="-9" positionY="135" width="128" height="149"/>
     </elements>
 </model>

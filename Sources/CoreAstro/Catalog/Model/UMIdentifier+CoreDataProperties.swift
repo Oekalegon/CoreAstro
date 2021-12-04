@@ -2,7 +2,7 @@
 //  UMIdentifier+CoreDataProperties.swift
 //  
 //
-//  Created by Don Willems on 01/12/2021.
+//  Created by Don Willems on 04/12/2021.
 //
 //
 
@@ -13,11 +13,9 @@ import CoreData
 extension UMIdentifier {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<UMIdentifier> {
-        return NSFetchRequest<UMIdentifier>(entityName: "Identifier")
+        return NSFetchRequest<UMIdentifier>(entityName: "UMIdentifier")
     }
 
-    @NSManaged public var attribute: NSObject?
-    @NSManaged public var attribute1: NSObject?
     @NSManaged public var identifier: String?
     @NSManaged public var catalog: UMCatalog?
     @NSManaged public var object: UMCelestialObject?

@@ -2,7 +2,7 @@
 //  UMCatalog+CoreDataProperties.swift
 //  
 //
-//  Created by Don Willems on 01/12/2021.
+//  Created by Don Willems on 04/12/2021.
 //
 //
 
@@ -13,7 +13,7 @@ import CoreData
 extension UMCatalog {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<UMCatalog> {
-        return NSFetchRequest<UMCatalog>(entityName: "Catalog")
+        return NSFetchRequest<UMCatalog>(entityName: "UMCatalog")
     }
 
     @NSManaged public var abbreviation: String?

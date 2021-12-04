@@ -9,6 +9,22 @@ import CoreData
 
 struct PersistenceController {
     static let shared = PersistenceController()
+    
+    func createCatalog(catalog: Catalog) throws {
+        if try self.umCatalog(abbreviation: catalog.abbreviation) != nil {
+            return
+        }
+        let umcatalog = UMCatalog(context: self.container.viewContext)
+        umcatalog.name = catalog.name
+        umcatalog.abbreviation = catalog.abbreviation
+        try self.container.viewContext.save()
+    }
+    
+    private func umCatalog(abbreviation: String) throws -> UMCatalog? {
+        let fetchRequest = UMCatalog.fetchRequest()
+        fetchRequest.fetchLimit = 1
+        return try self.container.viewContext.fetch(fetchRequest).first
+    }
 
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
@@ -33,7 +49,10 @@ struct PersistenceController {
     let container: NSPersistentContainer
 
     init(inMemory: Bool = false) {
-        container = NSPersistentContainer(name: "Catalog")
+        let bundle = Bundle.module
+        let modelURL = bundle.url(forResource: "Catalog", withExtension: ".momd")!
+        let model = NSManagedObjectModel(contentsOf: modelURL)!
+        container = NSPersistentContainer(name: "Catalog", managedObjectModel: model)
         
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
@@ -54,5 +73,6 @@ struct PersistenceController {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
+        print("Core Data store: \(NSPersistentContainer.defaultDirectoryURL())")
     }
 }

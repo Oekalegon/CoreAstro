@@ -2,7 +2,7 @@
 //  UMObjectDesignation+CoreDataProperties.swift
 //  
 //
-//  Created by Don Willems on 01/12/2021.
+//  Created by Don Willems on 04/12/2021.
 //
 //
 
@@ -13,7 +13,7 @@ import CoreData
 extension UMObjectDesignation {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<UMObjectDesignation> {
-        return NSFetchRequest<UMObjectDesignation>(entityName: "ObjectDesignation")
+        return NSFetchRequest<UMObjectDesignation>(entityName: "UMObjectDesignation")
     }
 
     @NSManaged public var bayer: String?
