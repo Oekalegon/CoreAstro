@@ -1,0 +1,151 @@
+{
+    "name": "Bright Star Catalogue",
+    "defaultType": "/star",
+    "files": [{
+        "filename": "BSC.dat",
+        "fields": [{
+                "name": "Harvard Revised Number",
+                "startIndex": 1,
+                "endIndex": 4,
+                "type": "ObjectIdentifier",
+                "typeData": {
+                    "catalogIdentifier": "HR"
+                }
+            },
+            {
+                "name": "Name, generally Bayer and/or Flamsteed name",
+                "startIndex": 5,
+                "endIndex": 14,
+                "type": "BayerFlamsteedName"
+            },
+            {
+                "name": "Durchmusterung Identification",
+                "startIndex": 15,
+                "endIndex": 25,
+                "type": "ObjectIdentifier",
+                "typeData": {
+                    "catalogIdentifier": "DM"
+                }
+            },
+            {
+                "name": "Henry Draper catalog number",
+                "startIndex": 26,
+                "endIndex": 31,
+                "type": "ObjectIdentifier",
+                "typeData": {
+                    "catalogIdentifier": "HD"
+                }
+            },
+            {
+                "name": "SAO catalog number",
+                "startIndex": 32,
+                "endIndex": 37,
+                "type": "ObjectIdentifier",
+                "typeData": {
+                    "catalogIdentifier": "SAO"
+                }
+            },
+            {
+                "name": "FK5 star number",
+                "startIndex": 38,
+                "endIndex": 41,
+                "type": "ObjectIdentifier",
+                "typeData": {
+                    "catalogIdentifier": "FK5"
+                }
+            },
+            {
+                "name": "Infra-red source flag",
+                "startIndex": 42,
+                "endIndex": 42,
+                "type": "TypeFlag",
+                "typeData": {
+                    "I": "/infra-red-source"
+                }
+            },
+            {
+                "name": "Aitken's Double Star Catalog (ADS) designation",
+                "startIndex": 45,
+                "endIndex": 51,
+                "type": "ObjectIdentifier",
+                "typeData": {
+                    "catalogIdentifier": "ADS"
+                }
+            },
+            {
+                "name": "Variable star identification",
+                "startIndex": 52,
+                "endIndex": 60,
+                "type": "VariableStarDesignation"
+            },
+            {
+                "name": "Rectangular Coordinates J2000.0",
+                "startIndex": 76,
+                "endIndex": 90,
+                "type": "EquatorialCoordinates",
+                "equinox": "J2000",
+                "epoch": "J2000",
+                "subfields": [
+                    {
+                        "name": "Right ascension J2000.0",
+                        "type": "LongitudeHMS",
+                        "startIndex": 1,
+                        "endIndex": 8,
+                        "subfields": [
+                            {
+                                "name": "Hours R.A.",
+                                "type": "AngleH",
+                                "startIndex": 1,
+                                "endIndex": 2,
+                                "unit": "hourAngle"
+                            },
+                            {
+                                "name": "Minutes R.A.",
+                                "type": "AngleM",
+                                "startIndex": 3,
+                                "endIndex": 4,
+                                "unit": "minuteAngle"
+                            },
+                            {
+                                "name": "Seconds R.A.",
+                                "type": "AngleS",
+                                "startIndex": 5,
+                                "endIndex": 8,
+                                "unit": "secondAngle"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Declination J2000.0",
+                        "type": "LatitudeSDMS",
+                        "startIndex": 9,
+                        "endIndex": 15,
+                        "subfields": [
+                            {
+                                "name": "Degree Dec.",
+                                "type": "AngleSD",
+                                "startIndex": 1,
+                                "endIndex": 3,
+                                "unit": "degree"
+                            },
+                            {
+                                "name": "Minutes Dec.",
+                                "type": "AngleAM",
+                                "startIndex": 4,
+                                "endIndex": 5,
+                                "unit": "arcminute"
+                            },
+                            {
+                                "name": "Seconds Dec.",
+                                "type": "AngleAS",
+                                "startIndex": 6,
+                                "endIndex": 7,
+                                "unit": "arcsecond"
+                            }
+                        ]
+                    }
+                ]
+            },
+        ]
+    }]
+}

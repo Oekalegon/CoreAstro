@@ -18,4 +18,10 @@ public class Planet : VSOPObject {
     public static let uranus = Planet(name: "Uranus")
     public static let neptune = Planet(name: "Neptune")
     
+    public override var types: [CelestialObjectType] {
+        get {
+            return [.solarSystemObject, .planet]
+        }
+    }
+    
 }

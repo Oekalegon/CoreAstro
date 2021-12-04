@@ -12,7 +12,7 @@ public protocol Star : CelestialObject {
     
 }
 
-public class CatalogStar: Star, CatalogObject {
+public class CatalogStar: Star, CatalogObject, CustomStringConvertible {
     
     public var identifier: ObjectIdentifier {
         get {
@@ -36,14 +36,51 @@ public class CatalogStar: Star, CatalogObject {
     
     public let names: [StringLiteral]
     
+    public let types: [CelestialObjectType] 
+    
+    public func isOfType(_ type: CelestialObjectType) -> Bool {
+        for objectType in types {
+            if objectType.rawValue.contains(type.rawValue) {
+                return true
+            }
+        }
+        return false
+    }
+    
+    public let bayerDesignation : BayerDesignation?
+    public let flamsteedDesignation : FlamsteedDesignation?
+    public let variableStarDesignation: VariableStarDesignation?
+    
     private let coordinates: Coordinates
     private let constellation: Constellation?
     
-    public init(names: [StringLiteral], identifiers: [ObjectIdentifier], coordinates: Coordinates, constellation: Constellation? = nil) throws {
-        self.names = names
+    public init(names: [StringLiteral],
+                bayer: BayerDesignation? = nil,
+                flamsteed: FlamsteedDesignation? = nil,
+                variableStarDesignation: VariableStarDesignation? = nil,
+                identifiers: [ObjectIdentifier],
+                types: [CelestialObjectType],
+                coordinates: Coordinates,
+                constellation: Constellation? = nil) throws {
+        var tempNames = [StringLiteral]()
+        tempNames.append(contentsOf: names)
+        if bayer != nil {
+            tempNames.append(StringLiteral(bayer!.designation, language: nil))
+        }
+        if flamsteed != nil {
+            tempNames.append(StringLiteral(flamsteed!.designation, language: nil))
+        }
+        if variableStarDesignation != nil {
+            tempNames.append(StringLiteral(variableStarDesignation!.designation, language: nil))
+        }
+        self.names = tempNames
         self.identifiers = identifiers
         self.coordinates = try coordinates.convert(to: .ICRS, positionType: .meanPosition)
         self.constellation = constellation
+        self.types = types
+        self.bayerDesignation = bayer
+        self.flamsteedDesignation = flamsteed
+        self.variableStarDesignation = variableStarDesignation
     }
     
     public func names(language: String?) -> [String] {
@@ -104,5 +141,16 @@ public class CatalogStar: Star, CatalogObject {
         let coord = self.eclipticalCoordinates(on: date, from: origin)
         let separation = try! Coordinates.angularSeparation(between: coord, and: sun)
         return separation
+    }
+    
+    public var description: String {
+        get {
+            var ident = self.name
+            if ident == nil {
+                ident = "[\(self.identifier.description)]"
+            }
+            let date = Date()
+            return "\(ident!)   \(self.equatorialCoordinates(on:date)) in \(self.constellation(on:date).name)"
+        }
     }
 }

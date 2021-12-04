@@ -29,7 +29,7 @@ public class VSOPObject : SolarSystemObject {
     
     init(name: String) {
         self.vsop = VSOP.shared[name]!
-        self._names.append(StringLiteral(string: name, language: "en"))
+        self._names.append(StringLiteral(name, language: "en"))
     }
     
     public var name: String? {
@@ -88,6 +88,21 @@ public class VSOPObject : SolarSystemObject {
         return namesRet
     }
     
+    public var types: [CelestialObjectType] {
+        get {
+            return [.solarSystemObject]
+        }
+    }
+    
+    public func isOfType(_ type: CelestialObjectType) -> Bool {
+        for objectType in types {
+            if objectType.rawValue.contains(type.rawValue) {
+                return true
+            }
+        }
+        return false
+    }
+    
     public func equatorialCoordinates(on date: Date) -> Coordinates {
         return try! vsop.coordinates(on: date).convert(to: .ICRS, positionType: .meanPosition)
     }
@@ -131,6 +146,12 @@ public class VSOPObject : SolarSystemObject {
 }
 
 public class Sun : VSOPObject, Star {
+    
+    public override var types: [CelestialObjectType] {
+        get {
+            return [.solarSystemObject, .star]
+        }
+    }
     
     fileprivate init() {
         super.init(name: "Sun")

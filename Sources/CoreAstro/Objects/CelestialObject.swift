@@ -8,6 +8,48 @@
 import Foundation
 import CoreMeasure
 
+public enum CelestialObjectType : String, CaseIterable, CustomStringConvertible {
+    case solarSystemObject = "/solar-system-object"
+    case planetarySystemObject = "/solar-system-object/planetary-system-object"
+    case planet = "/solar-system-object/planetary-system-object/planet"
+    case moon = "/solar-system-object/planetary-system-object/moon"
+    case dwarfPlanet = "/solar-system-object/dwarf-planet"
+    case minorPlanet = "/solar-system-object/minor-planet"
+    case comet = "/solar-system-object/comet"
+    
+    case star = "/star"
+    case doubleStar = "/star/double-star"
+    case opticalDouble = "/star/double-star/optical-double"
+    case binaryStar = "/star/double-star/multiple-star/double"
+    case visualBinaryStar = "/star/double-star/multiple-star/visual"
+    case multipleStar = "/star/double-star/multiple-star"
+    case spectroscopicBinaryStar = "/star/double-star/multiple-star/spectroscopic"
+    case variableStar = "/star/variable"
+    
+    case openCluster = "/open-cluster"
+    case globularCluster = "/globular-cluster"
+    
+    case nebula = "/nebula"
+    case reflectionNebula = "/nebula/reflection"
+    case emissionNebula = "/nebula/emission"
+    case darkNebula = "/nebula/dark"
+    
+    case galaxy = "/galaxy"
+    case quasar = "/galaxy/quasar"
+    case galaxyCluster = "/galaxy-cluster"
+    case galaxySuperCluster = "/galaxy-super-cluster"
+    
+    case XRaySource = "/X-ray-source"
+    case radioSource = "/radio-source"
+    case infraRedSource = "/infra-red-source"
+    
+    public var description: String {
+        get {
+            return self.rawValue
+        }
+    }
+}
+
 /// This protocol defines the features of a generic celestial object.
 ///
 /// A celestial object is defined as an object in celestial space, e.g. with celestial coordinates.
@@ -30,6 +72,17 @@ public protocol CelestialObject {
     ///   - language: The language identifier
     /// - Returns: The names
     func names(language: String?) -> [String]
+    
+    /// The types of the celestial object. A celestial object can be of multiple types (e.g. a multiple
+    /// star that is also a variable star).
+    var types: [CelestialObjectType] {get}
+    
+    /// This function returns `true` when the object is of the specified type.
+    ///
+    /// The type should be considered hierarchically. If the type is e.g. a double star, this function should
+    /// also return `true` when the specified type is `.star`.
+    /// - Returns: `true` when the object is of the specified type, `false` otherwise.
+    func isOfType(_ type: CelestialObjectType) -> Bool
     
     /// Calculates the ICRS equatorial coordinates for the object at the specified date.
     /// - Parameters:
