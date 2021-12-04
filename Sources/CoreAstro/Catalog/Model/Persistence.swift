@@ -7,17 +7,31 @@
 
 import CoreData
 
-struct PersistenceController {
-    static let shared = PersistenceController()
+struct CatalogPersistenceController {
+    static let shared = CatalogPersistenceController()
     
-    func createCatalog(catalog: Catalog) throws {
-        if try self.umCatalog(abbreviation: catalog.abbreviation) != nil {
-            return
+    func createCatalog(catalog: Catalog) throws -> UMCatalog {
+        let umcatalog = try self.createCatalog(abbreviation: catalog.abbreviation)
+        if umcatalog.name == nil {
+            umcatalog.name = catalog.name
+            try self.container.viewContext.save()
         }
-        let umcatalog = UMCatalog(context: self.container.viewContext)
-        umcatalog.name = catalog.name
-        umcatalog.abbreviation = catalog.abbreviation
-        try self.container.viewContext.save()
+        return umcatalog
+    }
+    
+    private func createCatalog(abbreviation: String) throws -> UMCatalog {
+        var umcatalog = try self.umCatalog(abbreviation: abbreviation)
+        if umcatalog != nil {
+            return umcatalog!
+        }
+        umcatalog = UMCatalog(context: self.container.viewContext)
+        umcatalog!.abbreviation = abbreviation
+        return umcatalog!
+    }
+    
+    public func catalogHasBeenImported(abbreviation: String) throws -> Bool {
+        let umcatalog = try self.umCatalog(abbreviation: abbreviation)
+        return umcatalog != nil
     }
     
     private func umCatalog(abbreviation: String) throws -> UMCatalog? {
@@ -25,9 +39,112 @@ struct PersistenceController {
         fetchRequest.fetchLimit = 1
         return try self.container.viewContext.fetch(fetchRequest).first
     }
+    
+    public func search(string: String) -> [CatalogObject] {
+        var results = [CatalogObject]()
+        let fetchRequest = UMCelestialObject.fetchRequest()
 
-    static var preview: PersistenceController = {
-        let result = PersistenceController(inMemory: true)
+        fetchRequest.predicate = NSPredicate(
+            format: "names.name CONTAINS[cd] %@", string
+        )
+        let umobjects = try? self.container.viewContext.fetch(fetchRequest)
+        if umobjects != nil {
+            for umobject in umobjects! {
+                print("\n  ---------")
+                for umname in umobject.names! {
+                    print("\tname: \((umname as! UMName).name)")
+                }
+            }
+        }
+        return results
+    }
+    
+    func addObjects(_ objects: [CatalogObject]) throws {
+        print("\n-- Start Adding \(objects.count) objects from catalog")
+        var i = 0
+        var display = -1
+        for object in objects {
+            try self.addObject(object)
+            i = i+1
+            if Int(i/(objects.count/100)) != display {
+                display = Int(i/(objects.count/100))
+                print("\t\(display)% Done")
+            }
+            if i%500 == 0 {
+                print("Saving objects to database")
+                try self.container.viewContext.save()
+            }
+        }
+        try self.container.viewContext.save()
+    }
+    
+    private func addObject(_ object: CatalogObject) throws {
+        let umobject = UMCelestialObject(context: self.container.viewContext)
+        for type in object.types {
+            let umtype = UMType(context: self.container.viewContext)
+            umtype.name = type.rawValue
+            umobject.addToTypes(umtype)
+        }
+        for name in object.names {
+            let umname = UMName(context: self.container.viewContext)
+            umname.name = name.string
+            umname.language = name.language
+            umobject.addToNames(umname)
+        }
+        for identifier in object.identifiers {
+            let umidentifier = UMIdentifier(context: self.container.viewContext)
+            umidentifier.identifier = identifier.identifier
+            umidentifier.catalog = try umCatalog(abbreviation: identifier.catalogIdentifier)
+            self.add(name: identifier.description, to: umobject, type: "CatalogIdentifier")
+            umobject.addToIdentifiers(umidentifier)
+        }
+        let eqJ2000 = object.equatorialCoordinates(on: .J2000)
+        umobject.rightAscension = try! eqJ2000.longitude.convert(to: .degree).scalarValue
+        umobject.declination = try! eqJ2000.latitude.convert(to: .degree).scalarValue
+        if (object as? CatalogStar) != nil {
+            let star = object as! CatalogStar
+            if star.bayerDesignation != nil {
+                let umdesignation = UMObjectDesignation(context: self.container.viewContext)
+                umdesignation.bayer = star.bayerDesignation!.letter
+                if star.bayerDesignation!.superScript != nil {
+                    umdesignation.bayerSuperScript = Int16(star.bayerDesignation!.superScript!)
+                }
+                umdesignation.constellationAbbreviation = star.bayerDesignation!.constellation.abbreviation
+                self.add(name: star.bayerDesignation!.designation, to: umobject, type:"BayerDesignation")
+                self.add(name: star.bayerDesignation!.abbreviated, to: umobject, type:"BayerDesignationAbbreviated")
+                self.add(name: star.bayerDesignation!.transcibed, to: umobject, type:"BayerDesignationTranscribed")
+                umobject.addToDesignations(umdesignation)
+            }
+            if star.flamsteedDesignation != nil {
+                let umdesignation = UMObjectDesignation(context: self.container.viewContext)
+                umdesignation.flamsteed = Int16(star.flamsteedDesignation!.number)
+                umdesignation.constellationAbbreviation = star.flamsteedDesignation!.constellation.abbreviation
+                self.add(name: star.flamsteedDesignation!.designation, to: umobject, type:"FlamsteedDesignation")
+                self.add(name: star.flamsteedDesignation!.abbreviated, to: umobject, type:"FlamsteedDesignationAbbreviated")
+                umobject.addToDesignations(umdesignation)
+            }
+            if star.variableStarDesignation != nil {
+                let umdesignation = UMObjectDesignation(context: self.container.viewContext)
+                umdesignation.variableStar = star.variableStarDesignation!.identifier
+                umdesignation.constellationAbbreviation = star.variableStarDesignation!.constellation.abbreviation
+                self.add(name: star.variableStarDesignation!.designation, to: umobject, type:"VariableStarDesignation")
+                self.add(name: star.variableStarDesignation!.abbreviated, to: umobject, type:"VariableStarDesignationAbbreviated")
+                umobject.addToDesignations(umdesignation)
+            }
+        }
+    }
+    
+    private func add(name: String, to object: UMCelestialObject, type: String) {
+        let umname = UMName(context: self.container.viewContext)
+        umname.name = name
+        umname.language = type
+        object.addToNames(umname)
+    }
+    
+    
+
+    static var preview: CatalogPersistenceController = {
+        let result = CatalogPersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
         /*
         for _ in 0..<10 {

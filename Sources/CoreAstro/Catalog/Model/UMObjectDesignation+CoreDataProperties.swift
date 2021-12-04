@@ -2,13 +2,12 @@
 //  UMObjectDesignation+CoreDataProperties.swift
 //  
 //
-//  Created by Don Willems on 04/12/2021.
+//  Created by Don Willems on 05/12/2021.
 //
 //
 
 import Foundation
 import CoreData
-
 
 extension UMObjectDesignation {
 
@@ -17,7 +16,7 @@ extension UMObjectDesignation {
     }
 
     @NSManaged public var bayer: String?
-    @NSManaged public var bayerComponent: Int16
+    @NSManaged public var bayerSuperScript: Int16
     @NSManaged public var constellationAbbreviation: String?
     @NSManaged public var flamsteed: Int16
     @NSManaged public var variableStar: String?

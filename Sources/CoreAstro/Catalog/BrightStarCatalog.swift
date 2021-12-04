@@ -48,13 +48,17 @@ public struct BrightStarCatalog: Catalog {
     public var types = [CelestialObjectType]()
     
     private init() throws {
-        try PersistenceController.shared.createCatalog(catalog: self)
-        self.load(from: Bundle.module.url(forResource: "BSC", withExtension: "json")!)
+        let catalogHasBeenImported = try CatalogPersistenceController.shared.catalogHasBeenImported(abbreviation: self.abbreviation)
+        if !catalogHasBeenImported {
+            let _ = try CatalogPersistenceController.shared.createCatalog(catalog: self)
+            try self.load(from: Bundle.module.url(forResource: "BSC", withExtension: "json")!)
+        }
     }
     
-    private func load(from url: URL) {
-        let coredataControl = PersistenceController.shared
+    private func load(from url: URL) throws {
+        let coredataControl = CatalogPersistenceController.shared
         let fileReader = CatalogTextFileReader(url: url)
         let objects = fileReader.load()
+        try coredataControl.addObjects(objects)
     }
 }

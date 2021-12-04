@@ -2,13 +2,12 @@
 //  UMCelestialObject+CoreDataProperties.swift
 //  
 //
-//  Created by Don Willems on 04/12/2021.
+//  Created by Don Willems on 05/12/2021.
 //
 //
 
 import Foundation
 import CoreData
-
 
 extension UMCelestialObject {
 
@@ -26,7 +25,6 @@ extension UMCelestialObject {
     @NSManaged public var properMotionDec: Double
     @NSManaged public var properMotionRA: Double
     @NSManaged public var rightAscension: Double
-    @NSManaged public var type: String?
     @NSManaged public var area: UMArea?
     @NSManaged public var children: NSSet?
     @NSManaged public var designations: NSOrderedSet?
@@ -34,6 +32,7 @@ extension UMCelestialObject {
     @NSManaged public var names: NSOrderedSet?
     @NSManaged public var parents: NSSet?
     @NSManaged public var properties: NSOrderedSet?
+    @NSManaged public var types: NSSet?
 
 }
 
@@ -208,5 +207,22 @@ extension UMCelestialObject {
 
     @objc(removeProperties:)
     @NSManaged public func removeFromProperties(_ values: NSOrderedSet)
+
+}
+
+// MARK: Generated accessors for types
+extension UMCelestialObject {
+
+    @objc(addTypesObject:)
+    @NSManaged public func addToTypes(_ value: UMType)
+
+    @objc(removeTypesObject:)
+    @NSManaged public func removeFromTypes(_ value: UMType)
+
+    @objc(addTypes:)
+    @NSManaged public func addToTypes(_ values: NSSet)
+
+    @objc(removeTypes:)
+    @NSManaged public func removeFromTypes(_ values: NSSet)
 
 }

@@ -62,18 +62,7 @@ public class CatalogStar: Star, CatalogObject, CustomStringConvertible {
                 types: [CelestialObjectType],
                 coordinates: Coordinates,
                 constellation: Constellation? = nil) throws {
-        var tempNames = [StringLiteral]()
-        tempNames.append(contentsOf: names)
-        if bayer != nil {
-            tempNames.append(StringLiteral(bayer!.designation, language: nil))
-        }
-        if flamsteed != nil {
-            tempNames.append(StringLiteral(flamsteed!.designation, language: nil))
-        }
-        if variableStarDesignation != nil {
-            tempNames.append(StringLiteral(variableStarDesignation!.designation, language: nil))
-        }
-        self.names = tempNames
+        self.names = names
         self.identifiers = identifiers
         self.coordinates = try coordinates.convert(to: .ICRS, positionType: .meanPosition)
         self.constellation = constellation

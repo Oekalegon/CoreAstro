@@ -16,4 +16,8 @@ final class CatalogTests: XCTestCase {
     func testBSCCatalog() throws {
         let bsc = BrightStarCatalog.catalog
     }
+    
+    func testObjectSearch() throws {
+        let results = CelestialObjectSearch.shared.search(string: "alpha Ori")
+    }
 }

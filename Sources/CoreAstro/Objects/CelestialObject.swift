@@ -8,6 +8,16 @@
 import Foundation
 import CoreMeasure
 
+public struct CelestialObjectSearch {
+    
+    public static let shared = CelestialObjectSearch()
+    
+    public func search(string: String) -> [CelestialObject] {
+        let objects = CatalogPersistenceController.shared.search(string: string)
+        return objects
+    }
+}
+
 public enum CelestialObjectType : String, CaseIterable, CustomStringConvertible {
     case solarSystemObject = "/solar-system-object"
     case planetarySystemObject = "/solar-system-object/planetary-system-object"

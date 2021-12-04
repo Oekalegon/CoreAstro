@@ -27,7 +27,6 @@
         <attribute name="properMotionDec" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="properMotionRA" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="rightAscension" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="type" attributeType="String"/>
         <relationship name="area" optional="YES" maxCount="1" deletionRule="Nullify" ordered="YES" destinationEntity="UMArea" inverseName="objects" inverseEntity="UMArea"/>
         <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UMCelestialObject" inverseName="parents" inverseEntity="UMCelestialObject"/>
         <relationship name="designations" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="UMObjectDesignation" inverseName="object" inverseEntity="UMObjectDesignation"/>
@@ -35,6 +34,7 @@
         <relationship name="names" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="UMName" inverseName="object" inverseEntity="UMName"/>
         <relationship name="parents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UMCelestialObject" inverseName="children" inverseEntity="UMCelestialObject"/>
         <relationship name="properties" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="UMProperty" inverseName="object" inverseEntity="UMProperty"/>
+        <relationship name="types" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UMType" inverseName="objects" inverseEntity="UMType"/>
     </entity>
     <entity name="UMIdentifier" representedClassName="CoreAstro.UMIdentifier" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="String"/>
@@ -43,12 +43,12 @@
     </entity>
     <entity name="UMName" representedClassName="CoreAstro.UMName" syncable="YES">
         <attribute name="language" optional="YES" attributeType="String"/>
-        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
         <relationship name="object" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UMCelestialObject" inverseName="names" inverseEntity="UMCelestialObject"/>
     </entity>
     <entity name="UMObjectDesignation" representedClassName="CoreAstro.UMObjectDesignation" syncable="YES">
         <attribute name="bayer" optional="YES" attributeType="String"/>
-        <attribute name="bayerComponent" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="bayerSuperScript" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="constellationAbbreviation" optional="YES" attributeType="String"/>
         <attribute name="flamsteed" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="variableStar" optional="YES" attributeType="String"/>
@@ -64,6 +64,10 @@
         <attribute name="unit" optional="YES" attributeType="String"/>
         <relationship name="object" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UMCelestialObject" inverseName="properties" inverseEntity="UMCelestialObject"/>
     </entity>
+    <entity name="UMType" representedClassName="CoreAstro.UMType" syncable="YES">
+        <attribute name="name" attributeType="String"/>
+        <relationship name="objects" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UMCelestialObject" inverseName="types" inverseEntity="UMCelestialObject"/>
+    </entity>
     <elements>
         <element name="UMArea" positionX="9" positionY="171" width="128" height="164"/>
         <element name="UMCatalog" positionX="-63" positionY="-18" width="128" height="74"/>
@@ -72,5 +76,6 @@
         <element name="UMName" positionX="-54" positionY="72" width="128" height="74"/>
         <element name="UMObjectDesignation" positionX="-18" positionY="108" width="128" height="119"/>
         <element name="UMProperty" positionX="-9" positionY="135" width="128" height="149"/>
+        <element name="UMType" positionX="-27" positionY="144" width="128" height="59"/>
     </elements>
 </model>
