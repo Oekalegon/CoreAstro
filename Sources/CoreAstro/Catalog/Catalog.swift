@@ -64,6 +64,7 @@ struct CatalogTextFileReader {
         var constellation: Constellation? = nil
         var objectTypes = [CelestialObjectType]()
         var coordinates: Coordinates? = nil
+        var magnitude: Magnitude? = nil
         if defaultType != nil {
             objectTypes.append(defaultType!)
         }
@@ -97,10 +98,23 @@ struct CatalogTextFileReader {
                 }
             } else if field.type == "EquatorialCoordinates" {
                 coordinates = parseCoordinates(field: field, value:value)
+            } else if field.type == "Vmag" {
+                let measure = try! parseMeasure(field: field, value:value)
+                if measure != nil {
+                    magnitude = try! Magnitude(symbol: "mV", measure: measure!)
+                }
             }
         }
-        if objectTypes.contains(.star) && coordinates != nil {
-            object = try! CatalogStar(names: names, bayer: bayer, flamsteed: flamsteed, variableStarDesignation: variableStarDesignation, identifiers: identifiers, types: objectTypes, coordinates: coordinates!, constellation: constellation)
+        if objectTypes.contains(.star) && coordinates != nil && magnitude != nil {
+            object = try! CatalogStar(names: names,
+                                      bayer: bayer,
+                                      flamsteed: flamsteed,
+                                      variableStarDesignation: variableStarDesignation,
+                                      identifiers: identifiers,
+                                      types: objectTypes,
+                                      coordinates: coordinates!,
+                                      magnitude: magnitude!,
+                                      constellation: constellation)
             print(object!)
         } else {
             print("\n---")
@@ -113,8 +127,26 @@ struct CatalogTextFileReader {
             print("constellation: \(constellation)")
             print("types: \(objectTypes)")
             print("coordinates: \(coordinates)")
+            print("magnitude: \(magnitude)")
         }
         return object
+    }
+    
+    func parseMeasure(field: CatalogTextFileField, value: String) throws -> Measure? {
+        var unit: OMUnit? = nil
+        if field.unit == "magnitude" {
+            unit = .magnitude
+        }
+        if unit == nil {
+            return nil
+        }
+        let doubleValue = Double(value.trimmingCharacters(in: .whitespaces))
+        if doubleValue == nil {
+            return nil
+        }
+        let measure = try Measure(doubleValue!, unit: unit!)
+        // TODO: Support errors
+        return measure
     }
     
     func parseCoordinates(field: CatalogTextFileField, value: String) -> Coordinates? {
@@ -332,4 +364,5 @@ struct CatalogTextFileField : Decodable {
     let equinox: String?
     let epoch: String?
     let subfields: [CatalogTextFileField]?
+    let unit: String?
 }

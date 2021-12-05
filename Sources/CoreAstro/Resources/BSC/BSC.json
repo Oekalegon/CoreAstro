@@ -146,6 +146,13 @@
                     }
                 ]
             },
+            {
+                "name": "Visual Magnitude",
+                "type": "Vmag",
+                "startIndex": 103,
+                "endIndex": 107,
+                "unit": "magnitude"
+            }
         ]
     }]
 }
