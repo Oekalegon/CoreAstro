@@ -52,6 +52,8 @@ public class CatalogStar: Star, CatalogObject, CustomStringConvertible {
     public let variableStarDesignation: VariableStarDesignation?
     
     private let coordinates: Coordinates
+    public let magnitude: Magnitude
+    
     private let constellation: Constellation?
     
     public init(names: [StringLiteral],
@@ -61,10 +63,12 @@ public class CatalogStar: Star, CatalogObject, CustomStringConvertible {
                 identifiers: [ObjectIdentifier],
                 types: [CelestialObjectType],
                 coordinates: Coordinates,
+                magnitude: Magnitude,
                 constellation: Constellation? = nil) throws {
         self.names = names
         self.identifiers = identifiers
         self.coordinates = try coordinates.convert(to: .ICRS, positionType: .meanPosition)
+        self.magnitude = magnitude
         self.constellation = constellation
         self.types = types
         self.bayerDesignation = bayer
