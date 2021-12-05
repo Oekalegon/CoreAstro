@@ -11,5 +11,15 @@ import CoreData
 
 
 public class UMType: NSManagedObject {
-
+    
+    public var type: CelestialObjectType? {
+        get {
+            for otype in CelestialObjectType.allCases {
+                if self.name == otype.rawValue {
+                    return otype
+                }
+            }
+            return nil
+        }
+    }
 }

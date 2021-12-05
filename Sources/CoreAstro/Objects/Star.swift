@@ -140,10 +140,19 @@ public class CatalogStar: Star, CatalogObject, CustomStringConvertible {
         get {
             var ident = self.name
             if ident == nil {
+                if self.bayerDesignation != nil {
+                    ident = "\(self.bayerDesignation!.designation)"
+                } else if self.flamsteedDesignation != nil {
+                    ident = "\(self.flamsteedDesignation!.designation)"
+                } else if self.variableStarDesignation != nil {
+                    ident = "\(self.variableStarDesignation!.designation)"
+                }
+            }
+            if ident == nil {
                 ident = "[\(self.identifier.description)]"
             }
             let date = Date()
-            return "\(ident!)   \(self.equatorialCoordinates(on:date)) in \(self.constellation(on:date).name)"
+            return "\(ident!)   \(self.equatorialCoordinates(on:date))  \(self.magnitude)  in \(self.constellation(on:date).name)"
         }
     }
 }

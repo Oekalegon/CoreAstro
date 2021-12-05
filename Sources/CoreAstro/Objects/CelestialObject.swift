@@ -16,6 +16,11 @@ public struct CelestialObjectSearch {
         let objects = CatalogPersistenceController.shared.search(string: string)
         return objects
     }
+    
+    public func search(minRA: Double, maxRA: Double, minDec: Double, maxDec: Double) -> [CatalogObject] {
+        let objects = CatalogPersistenceController.shared.search(minRA: minRA, maxRA: maxRA, minDec: minDec, maxDec: maxDec)
+        return objects
+    }
 }
 
 public enum CelestialObjectType : String, CaseIterable, CustomStringConvertible {

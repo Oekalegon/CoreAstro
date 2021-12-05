@@ -47,16 +47,80 @@ struct CatalogPersistenceController {
         fetchRequest.predicate = NSPredicate(
             format: "names.name CONTAINS[cd] %@", string
         )
+        let sortDescriptor = NSSortDescriptor(key: "magnitude", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
         let umobjects = try? self.container.viewContext.fetch(fetchRequest)
         if umobjects != nil {
             for umobject in umobjects! {
-                print("\n  ---------")
-                for umname in umobject.names! {
-                    print("\tname: \((umname as! UMName).name)")
+                let object = catalogObject(from: umobject)
+                if object != nil {
+                    results.append(object!)
                 }
             }
         }
         return results
+    }
+    
+    public func search(minRA: Double, maxRA: Double, minDec: Double, maxDec: Double) -> [CatalogObject]  {
+        var results = [CatalogObject]()
+        let fetchRequest = UMCelestialObject.fetchRequest()
+
+        let minRAPredicate = NSPredicate(
+            format: "rightAscension >= %f", minRA
+        )
+
+        let maxRAPredicate = NSPredicate(
+            format: "rightAscension <= %f", maxRA
+        )
+        let minDECPredicate = NSPredicate(
+            format: "declination >= %f", minDec
+        )
+
+        let maxDECPredicate = NSPredicate(
+            format: "declination <= %f", maxDec
+        )
+        var RAPredicate = NSCompoundPredicate(
+            andPredicateWithSubpredicates: [
+                minRAPredicate,
+                maxRAPredicate
+            ]
+        )
+        if maxRA < minRA { // RA spans over 0h
+            RAPredicate = NSCompoundPredicate(
+                orPredicateWithSubpredicates: [
+                    minRAPredicate,
+                    maxRAPredicate
+                ]
+            )
+        }
+        let DECPredicate = NSCompoundPredicate(
+            andPredicateWithSubpredicates: [
+                minDECPredicate,
+                maxDECPredicate
+            ]
+        )
+        fetchRequest.predicate = NSCompoundPredicate(
+            andPredicateWithSubpredicates: [
+                RAPredicate,
+                DECPredicate
+            ]
+        )
+        let sortDescriptor = NSSortDescriptor(key: "magnitude", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        let umobjects = try? self.container.viewContext.fetch(fetchRequest)
+        if umobjects != nil {
+            for umobject in umobjects! {
+                let object = catalogObject(from: umobject)
+                if object != nil {
+                    results.append(object!)
+                }
+            }
+        }
+        return results
+    }
+    
+    private func catalogObject(from umobject: UMCelestialObject) -> CatalogObject? {
+        return umobject.catalogObject
     }
     
     func addObjects(_ objects: [CatalogObject]) throws {
@@ -131,6 +195,7 @@ struct CatalogPersistenceController {
                 self.add(name: star.variableStarDesignation!.abbreviated, to: umobject, type:"VariableStarDesignationAbbreviated")
                 umobject.addToDesignations(umdesignation)
             }
+            umobject.magnitude = star.magnitude.scalarValue
         }
     }
     

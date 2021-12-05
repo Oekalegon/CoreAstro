@@ -18,6 +18,16 @@ final class CatalogTests: XCTestCase {
     }
     
     func testObjectSearch() throws {
-        let results = CelestialObjectSearch.shared.search(string: "alpha Ori")
+        let results = CelestialObjectSearch.shared.search(string: "ven")
+        for result in results {
+            print("\(result)")
+        }
+    }
+    
+    func testObjectAreaSearch() throws {
+        let results = CelestialObjectSearch.shared.search(minRA: 0*15, maxRA: 24*15, minDec: 85.0, maxDec: 90.0)
+        for result in results {
+            print("\(result)")
+        }
     }
 }
