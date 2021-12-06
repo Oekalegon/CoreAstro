@@ -18,14 +18,14 @@ public class UMCelestialObject: NSManagedObject {
             var catalogObject: CatalogObject? = nil
             if self.isa(type: .star) {
                 catalogObject = try? CatalogStar(names: self.objectNames,
-                                                bayer: self.bayerDesignation,
-                                                flamsteed: self.flamsteedDesignation,
-                                                variableStarDesignation: self.variableStarDesignation,
-                                                identifiers: self.objectIdentifiers,
-                                                types: self.objectTypes,
-                                                coordinates: self.coordinates,
-                                                magnitude: self.visualMagnitude,
-                                                constellation: self.constellation)
+                                                 bayer: self.bayerDesignation,
+                                                 flamsteed: self.flamsteedDesignation,
+                                                 variableStarDesignation: self.variableStarDesignation,
+                                                 identifiers: self.objectIdentifiers,
+                                                 types: self.objectTypes,
+                                                 coordinates: self.coordinates,
+                                                 magnitude: self.visualMagnitude,
+                                                 constellation: self.constellation)
             }
             return catalogObject
         }

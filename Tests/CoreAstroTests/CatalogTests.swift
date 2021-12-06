@@ -14,13 +14,16 @@ import CoreMeasure
 final class CatalogTests: XCTestCase {
     
     func testBSCCatalog() throws {
-        let bsc = BrightStarCatalog.catalog
+        let _ = BrightStarCatalog.catalog
     }
     
     func testObjectSearch() throws {
-        let results = CelestialObjectSearch.shared.search(string: "ven")
+        let results = CelestialObjectSearch.shared.search(string: "beta And")
         for result in results {
-            print("\(result)")
+            let catalogObject = result as? CatalogObject
+            let hr = catalogObject?["HR"]
+            let hd = catalogObject?["HD"]
+            print("\(hr?.description ?? "")  \(hd?.description ?? "")  >> \(result)")
         }
     }
     

@@ -34,6 +34,15 @@ public class CatalogStar: Star, CatalogObject, CustomStringConvertible {
         }
     }
     
+    public subscript(key: String) -> ObjectIdentifier? {
+        for identifier in identifiers {
+            if identifier.catalogIdentifier == key {
+                return identifier
+            }
+        }
+        return nil
+    }
+    
     public let names: [StringLiteral]
     
     public let types: [CelestialObjectType] 

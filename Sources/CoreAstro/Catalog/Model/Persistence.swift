@@ -36,6 +36,9 @@ struct CatalogPersistenceController {
     
     private func umCatalog(abbreviation: String) throws -> UMCatalog? {
         let fetchRequest = UMCatalog.fetchRequest()
+        fetchRequest.predicate = NSPredicate(
+            format: "abbreviation == %@", abbreviation
+        )
         fetchRequest.fetchLimit = 1
         return try self.container.viewContext.fetch(fetchRequest).first
     }
@@ -158,7 +161,7 @@ struct CatalogPersistenceController {
         for identifier in object.identifiers {
             let umidentifier = UMIdentifier(context: self.container.viewContext)
             umidentifier.identifier = identifier.identifier
-            umidentifier.catalog = try umCatalog(abbreviation: identifier.catalogIdentifier)
+            umidentifier.catalog = try createCatalog(abbreviation: identifier.catalogIdentifier)
             self.add(name: identifier.description, to: umobject, type: "CatalogIdentifier")
             umobject.addToIdentifiers(umidentifier)
         }

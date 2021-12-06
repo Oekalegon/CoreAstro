@@ -187,4 +187,10 @@ public protocol CatalogObject: CelestialObject {
     
     /// The set of identifiers of this object.
     var identifiers: [ObjectIdentifier] {get}
+    
+    /// The object indentifier for this object for the specified catalog.
+    /// - Parameters:
+    ///   - key: The catalog abbreviation
+    /// - Returns: The object identifier
+    subscript(key: String) -> ObjectIdentifier? {get}
 }
