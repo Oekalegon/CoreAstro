@@ -77,7 +77,7 @@ final class CoordinateConversionTests: XCTestCase {
         XCTAssertEqual(l, try! Longitude(0, unit: .degree))
         XCTAssertEqual(b.scalarValue, 0.0, accuracy: 0.0001)
         
-        let eqr = try gal.convert(to: .equatorialJ2000, positionType: .meanPosition)
+[        let eqr = try gal.convert(to: .equatorialJ2000, positionType: .meanPosition)
         let αr = try Longitude(measure: eqr.sphericalCoordinates.longitude.convert(to: .degree))
         let δr = try eqr.sphericalCoordinates.latitude.convert(to: .degree)
         XCTAssertEqual(α.scalarValue, αr.scalarValue, accuracy: 0.000001)

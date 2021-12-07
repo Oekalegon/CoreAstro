@@ -17,8 +17,17 @@ public struct CelestialObjectSearch {
         return objects
     }
     
-    public func search(minRA: Double, maxRA: Double, minDec: Double, maxDec: Double) -> [CatalogObject] {
-        let objects = CatalogPersistenceController.shared.search(minRA: minRA, maxRA: maxRA, minDec: minDec, maxDec: maxDec)
+    public func search(area: CelestialArea) -> [CatalogObject] {
+        let eqarea = area.containedInEquirectangularCelestialArea
+        let objects = CatalogPersistenceController.shared
+            .search(minRA: try! eqarea.southWestCoordinates.longitude
+                        .convert(to: .degree).scalarValue,
+                    maxRA: try! eqarea.northEastCoordinates.longitude
+                        .convert(to: .degree).scalarValue,
+                    minDec: try! eqarea.southWestCoordinates.latitude
+                        .convert(to: .degree).scalarValue,
+                    maxDec: try! eqarea.northEastCoordinates.latitude
+                        .convert(to: .degree).scalarValue)
         return objects
     }
 }

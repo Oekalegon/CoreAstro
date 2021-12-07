@@ -333,6 +333,19 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         }
     }
     
+    /// Creates a `Coordinates`instance initiated with a heliocentric equatorial system for the
+    /// specified equinox.
+    /// - Parameters:
+    ///   - rightAscension: The right ascension in degrees.
+    ///   - declination: The declination in degrees.
+    ///   - equinox: The equinox for the coordinate system, the default value is J2000.0.
+    /// - Returns: The coordinates.
+    /// - Throws QuantityValidationError.outOfRange: when the value for the declination is outside of
+    /// the range -90° to 90°.
+    public static func equatorialCoordinates(rightAscension: Double, declination: Double, equinox: Date = .J2000) throws -> Coordinates {
+        return try Coordinates(sphericalCoordinates: SphericalCoordinates(longitude: Longitude(symbol: "α", rightAscension, unit: .degree), latitude: Latitude(symbol: "δ", declination, unit: .degree)), system: .equatorial(for: equinox, from: .heliocentric), positionType: .meanPosition)
+    }
+    
     /// Creates a new set of coordinates specified by the given rectangular coordinates defined in the
     /// specified coordinate system.
     /// - Parameters:
@@ -389,7 +402,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
             let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
             // print(ncoord)
             let rc = ncoord._rectangularCoordinates
-            let newrc = try RectangularCoordinates(x: Distance(measure: rc.x - earthRC!.x), y: Distance(measure:rc.y - earthRC!.y), z: Distance(measure:rc.z - earthRC!.z))
+            let newrc = try! RectangularCoordinates(x: Distance(measure: rc.x - earthRC!.x), y: Distance(measure:rc.y - earthRC!.y), z: Distance(measure:rc.z - earthRC!.z))
             let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .geocentric)
             ncoord = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
             break
@@ -397,7 +410,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
             let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
             let sunRC = SolarSystem.sun.equatorialCoordinates(on: epoch!).rectangularCoordinates
             let rc = ncoord._rectangularCoordinates
-            let newrc = try RectangularCoordinates(x: Distance(measure: rc.x + sunRC!.x - earthRC!.x), y: Distance(measure:rc.y + sunRC!.y - earthRC!.y), z: Distance(measure:rc.z + sunRC!.z - earthRC!.z))
+            let newrc = try! RectangularCoordinates(x: Distance(measure: rc.x + sunRC!.x - earthRC!.x), y: Distance(measure:rc.y + sunRC!.y - earthRC!.y), z: Distance(measure:rc.z + sunRC!.z - earthRC!.z))
             let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .geocentric)
             ncoord = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
             break
@@ -412,7 +425,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         case .barycentric:
             let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
             let rc = ncoord._rectangularCoordinates
-            let newrc = try RectangularCoordinates(x: Distance(measure: rc.x + earthRC!.x), y: Distance(measure:rc.y + earthRC!.y), z: Distance(measure:rc.z + earthRC!.z))
+            let newrc = try! RectangularCoordinates(x: Distance(measure: rc.x + earthRC!.x), y: Distance(measure:rc.y + earthRC!.y), z: Distance(measure:rc.z + earthRC!.z))
             let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .barycentric)
             ncoord = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
             break
@@ -420,7 +433,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
             let earthRC = Planet.earth.equatorialCoordinates(on: epoch!).rectangularCoordinates
             let sunRC = SolarSystem.sun.equatorialCoordinates(on: epoch!).rectangularCoordinates
             let rc = ncoord._rectangularCoordinates
-            let newrc = try RectangularCoordinates(x: Distance(measure: rc.x - sunRC!.x + earthRC!.x), y: Distance(measure:rc.y - sunRC!.y + earthRC!.y), z: Distance(measure:rc.z - sunRC!.z + earthRC!.z))
+            let newrc = try! RectangularCoordinates(x: Distance(measure: rc.x - sunRC!.x + earthRC!.x), y: Distance(measure:rc.y - sunRC!.y + earthRC!.y), z: Distance(measure:rc.z - sunRC!.z + earthRC!.z))
             let newsystem = CoordinateSystem.equatorial(for: .J2000, from: .heliocentric)
             ncoord = Coordinates(rectangularCoordinates: newrc, system: newsystem, positionType: positionType)
             break
@@ -452,7 +465,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
             throw CoreAstroError.incorrectCoordinateSystem
         }
         // Coordinates Equatorial Equinox=equinox Origin=origin
-        var ncoord = try Coordinates.precess(coordinates: coordinates, to: .J2000)
+        var ncoord = try! Coordinates.precess(coordinates: coordinates, to: .J2000)
         // Coordinates Equatorial Equinox=J2000 Origin=origin
         ncoord = try Coordinates.convertOrigin(ncoord, to: .equatorialJ2000, positionType: coordinates.positionType)
         // Coordinates Equatorial Equinox=J2000 Origin=barycentric
@@ -466,7 +479,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         // Coordinates Equatorial Equinox=J2000 Origin=barycentric
         var ncoord = try Coordinates.convertOrigin(coordinates, to: .equatorial(for: .J2000, from: origin), positionType: coordinates.positionType)
         // Coordinates Equatorial Equinox=J2000 Origin=origin
-        ncoord = try Coordinates.precess(coordinates: ncoord, to: equinox)
+        ncoord = try! Coordinates.precess(coordinates: ncoord, to: equinox)
         // Coordinates Equatorial Equinox=equinox Origin=origin
         return ncoord
     }
@@ -476,12 +489,12 @@ public struct Coordinates: Equatable, CustomStringConvertible {
             throw CoreAstroError.incorrectCoordinateSystem
         }
         let ε = try meanObliquityOfTheEcliptic(on: coordinates.system.ecliptic!)
-        let np = SphericalCoordinates(longitude: try Longitude(270.0, unit: .degree), latitude: try Latitude(90.0-ε.scalarValue, unit: .degree))
+        let np = SphericalCoordinates(longitude: try! Longitude(270.0, unit: .degree), latitude: try! Latitude(90.0-ε.scalarValue, unit: .degree))
         // Coordinates Ecliptical Equinox=equinox Ecliptic = ecliptic
-        let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: try Longitude(0, unit: .degree), coordinates: coordinates._rectangularCoordinates)
+        let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: try! Longitude(0, unit: .degree), coordinates: coordinates._rectangularCoordinates)
         var ncoord = Coordinates(rectangularCoordinates: rc, system: .equatorial(for: coordinates.system.equinox!, from: coordinates.system.origin), positionType: coordinates.positionType, distanceIsKnown: coordinates.distanceIsKnown)
         // Coordinates Equatorial Equinox=equinox
-        ncoord = try Coordinates.convertEquatorialToEquatorial2000(coordinates: ncoord)
+        ncoord = try! Coordinates.convertEquatorialToEquatorial2000(coordinates: ncoord)
         // Coordinates Equatorial Equinox=J2000
         return ncoord
     }
@@ -506,9 +519,9 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         if coordinates.system.type != .galactic {
             throw CoreAstroError.incorrectCoordinateSystem
         }
-        let np = SphericalCoordinates(longitude: try Longitude(192.85948402, unit: .degree), latitude: try Latitude(27.12829637, unit: .degree))
+        let np = SphericalCoordinates(longitude: try! Longitude(192.85948402, unit: .degree), latitude: try! Latitude(27.12829637, unit: .degree))
         // Coordinates Galactic
-        let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: try Longitude(249.9276045998651, unit: .degree), coordinates: coordinates._rectangularCoordinates)
+        let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: try! Longitude(249.9276045998651, unit: .degree), coordinates: coordinates._rectangularCoordinates)
         var ncoord = Coordinates(rectangularCoordinates: rc, system: .equatorial(for: .J2000, from: coordinates.system.origin), positionType: coordinates.positionType, distanceIsKnown: coordinates.distanceIsKnown)
         ncoord = try Coordinates.convertEquatorialToEquatorial2000(coordinates: ncoord)
         // Coordinates Equatorial Equinox=J2000
@@ -519,11 +532,11 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         if coordinates.system.type != .equatorial || coordinates.system.equinox != .J2000 {
             throw CoreAstroError.incorrectCoordinateSystem
         }
-        let np = SphericalCoordinates(longitude: try Longitude(192.85948402, unit: .degree), latitude: try Latitude(27.12829637, unit: .degree))
+        let np = SphericalCoordinates(longitude: try! Longitude(192.85948402, unit: .degree), latitude: try! Latitude(27.12829637, unit: .degree))
         // Coordinates Equatorial Equinox=J2000 origin: barycentric
         var ncoord = try Coordinates.convertEquatorial2000ToEquatorial(coordinates: coordinates, equinox: .J2000, origin: origin)
         // Coordinates Equatorial Equinox=J2000 origin: origin
-        let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: try Longitude(249.9276045998651, unit: .degree), coordinates: coordinates._rectangularCoordinates)
+        let rc = Coordinates.convertFromEquatorial(systemNorthPole: np, ascendingNode: try! Longitude(249.9276045998651, unit: .degree), coordinates: coordinates._rectangularCoordinates)
         ncoord = Coordinates(rectangularCoordinates: rc, system: .galactic, positionType: coordinates.positionType, distanceIsKnown: coordinates.distanceIsKnown)
         // Coordinates Galactic
         return ncoord
@@ -536,7 +549,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         let geographicalLocation = coordinates.system.origin.geographicalLocation!
         let ϕ = try! Latitude(measure: geographicalLocation.latitude.convert(to: OMUnit.degree))
         let θ = try SiderealTime(on: coordinates.system.epoch!, at: geographicalLocation, positionType: coordinates.positionType)
-        let ω = try Longitude(θ.convert(to: OMUnit.degree).scalarValue + 180, unit: .degree)
+        let ω = try! Longitude(θ.convert(to: OMUnit.degree).scalarValue + 180, unit: .degree)
         let np = SphericalCoordinates(longitude: Longitude(angle: θ), latitude: ϕ)
         // Coordinates Horizontal
         let rc = Coordinates.convertToEquatorial(systemNorthPole: np, ascendingNode: ω, coordinates: coordinates._rectangularCoordinates)
@@ -553,7 +566,7 @@ public struct Coordinates: Equatable, CustomStringConvertible {
         }
         let ϕ = try! Latitude(measure: geographicalLocation.latitude.convert(to: .degree))
         let θ = try SiderealTime(on: epoch, at: geographicalLocation, positionType: coordinates.positionType)
-        let ω = try Longitude(θ.convert(to: OMUnit.degree).scalarValue + 180, unit: .degree)
+        let ω = try! Longitude(θ.convert(to: OMUnit.degree).scalarValue + 180, unit: .degree)
         let np = SphericalCoordinates(longitude: Longitude(angle: θ), latitude: ϕ)
         // Coordinates Equatorial Equinox=J2000
         var ncoord = try Coordinates.convertEquatorial2000ToEquatorial(coordinates: coordinates, equinox: epoch, origin: .topocentric(location: geographicalLocation))
