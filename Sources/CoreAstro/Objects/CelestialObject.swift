@@ -8,6 +8,21 @@
 import Foundation
 import CoreMeasure
 
+public struct CelestialObjectSearch {
+    
+    public static let shared = CelestialObjectSearch()
+    
+    public func search(string: String) -> [CelestialObject] {
+        let objects = CatalogPersistenceController.shared.search(string: string)
+        return objects
+    }
+    
+    public func search(minRA: Double, maxRA: Double, minDec: Double, maxDec: Double) -> [CatalogObject] {
+        let objects = CatalogPersistenceController.shared.search(minRA: minRA, maxRA: maxRA, minDec: minDec, maxDec: maxDec)
+        return objects
+    }
+}
+
 public enum CelestialObjectType : String, CaseIterable, CustomStringConvertible {
     case solarSystemObject = "/solar-system-object"
     case planetarySystemObject = "/solar-system-object/planetary-system-object"
@@ -172,4 +187,10 @@ public protocol CatalogObject: CelestialObject {
     
     /// The set of identifiers of this object.
     var identifiers: [ObjectIdentifier] {get}
+    
+    /// The object indentifier for this object for the specified catalog.
+    /// - Parameters:
+    ///   - key: The catalog abbreviation
+    /// - Returns: The object identifier
+    subscript(key: String) -> ObjectIdentifier? {get}
 }
