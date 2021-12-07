@@ -6,44 +6,45 @@
 //
 
 import Foundation
-import SwiftAA
 
 public protocol CelestialArea {
     
-    var equinox : Equinox { get }
+    var coordinateSystem: CoordinateSystem {get}
     var containedInEquirectangularCelestialArea : EquirectangularCelestialArea { get }
-    func contains(coordinates: EquatorialCoordinates) -> Bool
+    func contains(coordinates: Coordinates) throws -> Bool
     func intersects(with: CelestialArea) -> Bool
-    func precessedAreaCoordinates(to: Equinox) -> CelestialArea
 }
 
 public struct EquirectangularCelestialArea : CelestialArea {
     
-    public let equinox : Equinox
-    public let northEastCoordinates : EquatorialCoordinates
-    public let southWestCoordinates : EquatorialCoordinates
-    
-    public var southEastCoordinates: EquatorialCoordinates {
+    public var coordinateSystem: CoordinateSystem {
         get {
-            return EquatorialCoordinates(rightAscension: northEastCoordinates.rightAscension, declination: southWestCoordinates.declination, epoch: southWestCoordinates.epoch, equinox: southWestCoordinates.equinox)
+            return .equatorialJ2000
+        }
+    }
+    public let northEastCoordinates : Coordinates
+    public let southWestCoordinates : Coordinates
+    
+    public var southEastCoordinates: Coordinates {
+        get {
+            return Coordinates(sphericalCoordinates: SphericalCoordinates(longitude: northEastCoordinates.longitude, latitude: southWestCoordinates.latitude), system: self.coordinateSystem, positionType: .meanPosition)
         }
     }
     
-    public var northWestCoordinates: EquatorialCoordinates {
+    public var northWestCoordinates: Coordinates {
         get {
-            return EquatorialCoordinates(rightAscension: southWestCoordinates.rightAscension, declination: northEastCoordinates.declination, epoch: southWestCoordinates.epoch, equinox: southWestCoordinates.equinox)
+            return Coordinates(sphericalCoordinates: SphericalCoordinates(longitude: southWestCoordinates.longitude, latitude: northEastCoordinates.latitude), system: self.coordinateSystem, positionType: .meanPosition)
         }
     }
     
-    public init(southWest: EquatorialCoordinates, northEast: EquatorialCoordinates, equinox: Equinox = .standardJ2000) {
-        self.equinox = equinox
-        self.southWestCoordinates = southWest.precessedCoordinates(to: equinox)
-        self.northEastCoordinates = northEast.precessedCoordinates(to: equinox)
+    public init(southWest: Coordinates, northEast: Coordinates) throws {
+        self.southWestCoordinates = try southWest.convert(to: .equatorialJ2000, positionType: .meanPosition)
+        self.northEastCoordinates = try northEast.convert(to: .equatorialJ2000, positionType: .meanPosition)
     }
     
     private var crossesZeroRA : Bool {
         get {
-            return self.southWestCoordinates.rightAscension > self.northEastCoordinates.rightAscension
+            return self.southWestCoordinates.longitude > self.northEastCoordinates.longitude
         }
     }
     
@@ -53,16 +54,16 @@ public struct EquirectangularCelestialArea : CelestialArea {
         }
     }
     
-    public func contains(coordinates: EquatorialCoordinates) -> Bool {
-        let prescoord = coordinates.precessedCoordinates(to: self.equinox)
-        if !(prescoord.declination <= northEastCoordinates.declination && prescoord.declination >= southWestCoordinates.declination) {
-            return false
+    public func contains(coordinates: Coordinates) throws -> Bool {
+        let prescoord = try coordinates.convert(to: self.coordinateSystem, positionType: .meanPosition)
+        if !(prescoord.latitude <= northEastCoordinates.latitude && prescoord.latitude >= southWestCoordinates.latitude) {
+            return true
         }
-        if prescoord.rightAscension <= northEastCoordinates.rightAscension && prescoord.rightAscension >= southWestCoordinates.rightAscension {
+        if prescoord.longitude <= northEastCoordinates.longitude && prescoord.longitude >= southWestCoordinates.longitude {
             return true
         }
         if self.crossesZeroRA {
-            if prescoord.rightAscension >= northEastCoordinates.rightAscension || prescoord.rightAscension <= southWestCoordinates.rightAscension {
+            if prescoord.longitude >= northEastCoordinates.longitude || prescoord.longitude <= southWestCoordinates.longitude {
                 return true
             }
         }
@@ -70,15 +71,14 @@ public struct EquirectangularCelestialArea : CelestialArea {
     }
     
     public func intersects(with area: CelestialArea) -> Bool {
-        let precarea = area.precessedAreaCoordinates(to: self.equinox)
-        let rectarea = precarea.containedInEquirectangularCelestialArea
-        if !(rectarea.southWestCoordinates.declination < self.northEastCoordinates.declination && rectarea.northEastCoordinates.declination > self.southWestCoordinates.declination) {
+        let rectarea = area.containedInEquirectangularCelestialArea
+        if !(rectarea.southWestCoordinates.latitude < self.northEastCoordinates.latitude && rectarea.northEastCoordinates.latitude > self.southWestCoordinates.latitude) {
             return false
         }
-        var selfNEra = self.northEastCoordinates.rightAscension
-        var selfSWra = self.southWestCoordinates.rightAscension
-        var areaNEra = rectarea.northEastCoordinates.rightAscension
-        var areaSWra = rectarea.southWestCoordinates.rightAscension
+        var selfNEra = try! self.northEastCoordinates.longitude.convert(to: .angleHour).scalarValue
+        var selfSWra = try! self.southWestCoordinates.longitude.convert(to: .angleHour).scalarValue
+        var areaNEra = try! rectarea.northEastCoordinates.longitude.convert(to: .angleHour).scalarValue
+        var areaSWra = try! rectarea.southWestCoordinates.longitude.convert(to: .angleHour).scalarValue
         
         if areaSWra < selfNEra && areaNEra > selfSWra {
             return true
@@ -108,26 +108,5 @@ public struct EquirectangularCelestialArea : CelestialArea {
             }
         }
         return false
-    }
-    
-    public func precessedAreaCoordinates(to newEquinox: Equinox) -> CelestialArea {
-        var correctionForCrossing = Hour(0.0)
-        if self.crossesZeroRA {
-            correctionForCrossing = Hour(-24.0)
-        }
-        let nw = EquatorialCoordinates(rightAscension: southWestCoordinates.rightAscension, declination: northEastCoordinates.declination,equinox: equinox).precessedCoordinates(to: newEquinox)
-        let ne = EquatorialCoordinates(rightAscension: northEastCoordinates.rightAscension, declination: northEastCoordinates.declination,equinox: equinox).precessedCoordinates(to: newEquinox)
-        let sw = EquatorialCoordinates(rightAscension: southWestCoordinates.rightAscension, declination: southWestCoordinates.declination,equinox: equinox).precessedCoordinates(to: newEquinox)
-        let se = EquatorialCoordinates(rightAscension: northEastCoordinates.rightAscension, declination: southWestCoordinates.declination,equinox: equinox).precessedCoordinates(to: newEquinox)
-        let ras = [nw.rightAscension + correctionForCrossing, ne.rightAscension, sw.rightAscension + correctionForCrossing, se.rightAscension]
-        let decs = [nw.declination, ne.declination, sw.declination, se.declination]
-        let maxras = ras.max()!
-        let minras = ras.min()!
-        let maxdec = decs.max()!
-        let mindec = decs.min()!
-        let newMax = EquatorialCoordinates(rightAscension: maxras, declination: maxdec, epoch: northEastCoordinates.epoch, equinox: newEquinox)
-        let newMin = EquatorialCoordinates(rightAscension: minras, declination: mindec, epoch: northEastCoordinates.epoch, equinox: newEquinox)
-        let newArea = EquirectangularCelestialArea(southWest: newMin, northEast: newMax, equinox: newEquinox)
-        return newArea
     }
 }
